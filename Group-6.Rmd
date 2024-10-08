@@ -47,11 +47,12 @@ head(gene_expression)
 ```
 
 **Code Explanation:**
--header = TRUE: This tells R that the first row of the file contains the column names (i.e., headers for each column). This allows R to correctly assign the names to the data frame's columns.
 
--row.names = 1: This argument specifies that the first column of the data file (index 1) should be treated as row names instead of a regular data column. This means that the values in the first column will not be included as part of the data frame; instead, they will serve as labels for the rows.
+- header = TRUE: This tells R that the first row of the file contains the column names (i.e., headers for each column). This allows R to correctly assign the names to the data frame's columns.
 
--sep = "\t": This indicates that the data is tab-separated. Since the file is a .tsv (tab-separated values), this ensures that R reads the file correctly by treating each tab as a separator between columns.
+- row.names = 1: This argument specifies that the first column of the data file (index 1) should be treated as row names instead of a regular data column. This means that the values in the first column will not be included as part of the data frame; instead, they will serve as labels for the rows.
+
+- sep = "\t": This indicates that the data is tab-separated. Since the file is a .tsv (tab-separated values), this ensures that R reads the file correctly by treating each tab as a separator between columns.
 
 By using the row.names = 1 argument, the gene identifiers from the first column are set as the row names of the gene_expression data frame. As a result, when we display the data frame using head(gene_expression), we will see the gene identifiers as the row labels.
 
@@ -63,7 +64,7 @@ str(gene_expression)
 
 This shows the column names and the row names, allowing us to confirm that the gene identifiers are indeed set as row names. 
 
-##Step 2
+## Step 2
 The following code is used to calculate the mean of columns as well as add a new column "mean_count" to the existing data frame. 
 
 ```{r}
@@ -79,15 +80,16 @@ head(gene_expression)
 ```
 
 **Code Explanation:**
--rowMeans(gene_expression): This function calculates the mean of the counts for each row (gene) across all the specified columns. The result is a vector containing the mean counts for each gene.
 
--gene_expression$mean_count <-: This assigns the calculated mean counts to a new column called mean_count in the gene_expression data frame.
+- rowMeans(gene_expression): This function calculates the mean of the counts for each row (gene) across all the specified columns. The result is a vector containing the mean counts for each gene.
 
--head(gene_expression): This displays the first six genes along with all their corresponding count data and the new mean column.
+- gene_expression$mean_count <-: This assigns the calculated mean counts to a new column called mean_count in the gene_expression data frame.
+
+- head(gene_expression): This displays the first six genes along with all their corresponding count data and the new mean column.
 
 We can further use the View() command to visualize the data frame. By using this command we can further see the newly added column.
 
-##Step 3
+## Step 3
 To identify the 10 genes with the highest mean expression from the gene_expression data frame, the order() function can be utilized to sort the data based on the mean_count column in descending order. Subsequently, the top 10 rows can be extracted. The following steps outline this process:
 ```{r}
 # Read in the gene expression data
@@ -104,10 +106,11 @@ top_10_genes
 
 ```
 **Code Explanation:**
--order(-gene_expression$mean_count): This orders the indices of gene_expression based on the mean_count column in descending order (the negative sign - indicates descending order).
 
--gene_expression[...]: This uses the ordered indices to subset the gene_expression data frame, sorting the rows based on mean expression.
+- order(-gene_expression$mean_count): This orders the indices of gene_expression based on the mean_count column in descending order (the negative sign - indicates descending order).
 
--[1:10, ]: This selects the first 10 rows of the sorted data frame, which correspond to the genes with the highest mean expression.
+- gene_expression[...]: This uses the ordered indices to subset the gene_expression data frame, sorting the rows based on mean expression.
 
--top_10_genes: This stores the resulting data frame containing the top 10 genes, and the final line displays it.
+- [1:10, ]: This selects the first 10 rows of the sorted data frame, which correspond to the genes with the highest mean expression.
+
+- top_10_genes: This stores the resulting data frame containing the top 10 genes, and the final line displays it.
