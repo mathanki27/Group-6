@@ -114,3 +114,66 @@ top_10_genes
 - [1:10, ]: This selects the first 10 rows of the sorted data frame, which correspond to the genes with the highest mean expression.
 
 - top_10_genes: This stores the resulting data frame containing the top 10 genes, and the final line displays it.
+
+## Step 4
+The next step is to estimate the number of genes with a mean that is less than 10.This can be done with the help of the running the codes given below 
+```{r}
+#calculate the mean counts of the genes given in the list 
+gene_expression$mean_count <- rowMeans(gene_expression)
+```
+**code explanation:**
+The code rowMeans(gene_expression)is used to find the mean of all the values in a row for each gene given and this is done across all the columns or the genes present in the data.
+
+gene_expression$mean_count is the code which directs the production of a new category in the data frame by the name of mean_count and all the dta produced by the code rowMeans(gene_expression) is shown under this particular category
+```{r}
+#find the mean count find that have mean values less than 10 
+gene_expression$mean_count < 10
+```
+**code description:**
+This code functions to find out the genes from the given data frame (gene_expression)which have mean values which are less than 10.with this code we can specifying to find the mean values that are less than 10 in the mean_count column  that is created in the gene_expression data frame ,and then represent it in the form of true/ false.
+"true" represents that mean value is less than 10
+"False " value means that the mean value is more than 10.
+
+```{r}
+# Count the number of genes_expression with mean_count less than 10
+ sum(gene_expression$mean_count < 10, na.rm = TRUE)
+```
+**code explanation:**
+To determine the number of genes that have mean values less than 10, we so the sum total of the categories that is done with the help of the code given above, which is 35988.
+
+
+#Step 5
+This step involves the construction of the histogram which is a bar graph representation of the mean expression values .
+
+```{r}
+#Retreive all the mean count values given in the mean_count column
+gene_expression[,c("mean_count")]
+```
+**code explanation:**
+the code given above is used to specify the rows and columns that are being considered.according to the code , we are considering the all the rows and the specific column of mean_count which represents the mean expression values.
+
+
+```{r}
+# histogram of mean gene expression values
+hist(gene_expression$mean_count,xlab="mean expression value", main="Histogram of Mean Gene Expression Values")
+```
+**code explanation:**
+The code given above is used to generate a histogram of the mean expression values where in the code the function "hist" is used to produce a histogram for the specified data , that is, gene_expression. in the code the main heading for the graph and the x- axis headings are also specified.
+
+#Step 6
+```{r}
+#Import the csv file
+growth_data <- read.csv("growth_data.csv")
+```
+**code explanation**
+The code "read.csv" given above is used to import the csvfile named growth_data.csv and converts it into R object , where it is saved as growth_data.
+"<-" function is used to direct the output of the read.csv function to the growth_data.
+
+```{r}
+#Display the column names
+colnames(growth_data)
+```
+**Code explanation:**
+the code given above is used to list the column names and that is done with the help of the function "colnames" after which we also specify the name of the data frame ,that is growth_data.
+
+
