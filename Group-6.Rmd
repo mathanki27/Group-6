@@ -591,4 +591,85 @@ Apart from these differences ,there are other differences in the sequences of E.
 
 
 
+##Step 4
+Calculation of the frequency of DNA bases and protein in the total coding sequence and creation of a bar plot for the same.
 
+```{r}
+# Load the necessary package
+library(seqinr)
+
+
+# Unlist the DNA sequences (combine all sequences into one long sequence)
+dna_combined <- unlist(cds1)
+dna_combined2 <- unlist(cds2)
+```
+
+**Code Explanation**
+seqinr package is used for sequenece manipulation.The unlist function is used to combine the elements of bifido_cds.fa and Ecoli_cds.fa.The c function combines the vectors from both the sequences
+
+```{r}
+# Count the occurrences of each nucleotide (A, T, G, C)
+dna_counts <- table(dna_combined)
+dna_counts2 <- table(dna_combined2)
+```
+**Code Explanation**
+The table() function counts the occurences of each nucleotide and displays the results in the form of a tabular column
+
+```{r}
+# Calculate the total number of nucleotides
+total_bases <- sum(dna_counts)
+total_bases2 <- sum(dna_counts2)
+```
+**Code Explanation**
+The sum() function takes all the counts from the dna_counts tabular column and adds them together.total_bases indicates the variable it is stored in.In a similar way The sum() function takes all the counts from the dna_counts 2 tabular column and adds them together total_bases2 indicates the variable it is stored in
+
+```{r}
+# Calculate the frequency (proportion) of each nucleotide
+dna_frequency <- dna_counts / total_bases
+dna_frequency2 <- dna_counts2 / total_bases2
+```
+**Code Explanation**
+dna_counts / total_bases calculates the frequency of each nucleotide in the first sequence and stores this information in dna_frequency variable.Similarly dna_counts2 / total_bases calculates the frequency of each nucleotide in the second sequence and stores this information in dna_frequency2 variable.
+
+#Creation of barplot for nucleotide and amino acide frequency
+```{r}
+barplot(dna_frequency,xlab="nucleotides",ylab="frequency", main="Bifido CDS composition")
+barplot(dna_frequency2,xlab="nucleotides",ylab="frequency", main="E coli CDS composition")
+```
+**Code Explanation**
+The barplot function is used to create bar charts.Using the function barplot(dna_frequency) a barplot is created for the nucleotide sequences in "Bifido CDS composition",xlab labels the x axis as "nucleotides" and ylab labels the y axis as "frequency".Using the function barplot(dna_frequency) a barplot is created for the nucleotide sequences in "E coli CDS composition",xlab labels the x axis as "nucleotides" and ylab labels the y axis as "frequency"
+
+```{r}
+#Count the occurrences of each amino acid for protein_combined1
+aminoacid_count1 <- table(protein_combined1)
+aminoacid_count2 <- table(protein_combined2)
+```
+**Code Explanation**
+The table() function counts the number of unique amino acids present and represents the data in a tabular format.
+
+```{r}
+#Calculate the total number of amino acids in protein_combined1
+total_amino_acids1 <- sum(aminoacid_count1)
+total_amino_acids2 <- sum(aminoacid_count2)
+```
+**Code Explanation**
+sum() calculates the total number of amino acids in the set of protein sequences.
+
+```{r}
+#Calculate the frequency (proportion) of each amino acid for protein_combined1
+aa_frequency1 <-aminoacid_count1 / total_amino_acids1
+aa_frequency1 <-aminoacid_count2 / total_amino_acids2
+```
+**Code Explanation**
+aa_frequency1 <-aminoacid_count1 / total_amino_acids1 code divides the count of each amino acid in aminoacid_count1 by the total number of amino acids stored in total_amino_acids1
+aa_frequency1 <-aminoacid_count2 / total_amino_acids2 code divides the count of each amino acid in aminoacid_count2 by the total number of amino acids stored in total_amino_acids2
+
+```{r}
+barplot(aa_frequency1,xlab="nucleotides",ylab="frequency", main="Bifido CDS composition")
+barplot(aa_frequency2,xlab="nucleotides",ylab="frequency", main="E coli CDS composition")
+```
+**Code Explanation**
+The barplot() function is used to create barcharts,xlab="nucleotides" denotes the name for the x axis as "nucleotides"ylab="frequency"denotes the name for the y axis as "frequency" and main denotes the name of the chart as "Bifido CDS composition" in the first chart and "E coli CDS composition" in the second chart 
+# Differences between the two organisms
+The Ecoli cds DNA composition was around the same for a,c and t values but was slightly higher for g values whereas in the Bifido cds DNA composition there was great variability between the a,c,g and t values.
+Whereas in the amino acid frequencies in both Bifido and Ecoli there was not much variablity seen between the two.
