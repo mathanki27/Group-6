@@ -177,3 +177,18 @@ colnames(growth_data)
 the code given above is used to list the column names and that is done with the help of the function "colnames" after which we also specify the name of the data frame ,that is growth_data.
 
 
+# selects all data from all rows in columns 3 to 6 and calculates the mean
+colMeans(growth_data[, 3:6])
+
+# selects all data from all rows in columns 3 to 6 and calculates the standard deviation, the 2 refers to column selection and apply() is used to apply the sd function to each column
+
+apply(growth_data[, 3:6], 2,sd)
+
+#code used to create a boxplot from columns 3 to 6
+boxplot(growth_data[, 3:6])
+
+#code combines columns 4, 5 and 6 and calculates the mean
+mean(c(growth_data[,4], growth_data[,5], growth_data[,6]))
+
+
+
