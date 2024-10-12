@@ -1,8 +1,10 @@
 ---
 title: "Group-6"
-author: "Mathanki Mehra"
+author: "Mathanki Mehra, Anakha Prasad, Kalyla Dsouza"
 date: "2024-10-08"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 # PART 1
 
@@ -36,7 +38,7 @@ download.file(url1, destination)
 
 ```
 
-## Step 1
+### Step 1
 To read the gene_expression.tsv file into R and set the gene identifiers as the row names, the read.table() function can be used. Subsequently, the first six genes can be displayed using the head() function. The following code illustrates these steps:
 ```{r}
 # Read in the gene expression data and making gene identifiers as row names
@@ -64,7 +66,7 @@ str(gene_expression)
 
 This shows the column names and the row names, allowing us to confirm that the gene identifiers are indeed set as row names. 
 
-## Step 2
+### Step 2
 The following code is used to calculate the mean of columns as well as add a new column "mean_count" to the existing data frame. 
 
 ```{r}
@@ -89,7 +91,7 @@ head(gene_expression)
 
 We can further use the View() command to visualize the data frame. By using this command we can further see the newly added column.
 
-## Step 3
+### Step 3
 To identify the 10 genes with the highest mean expression from the gene_expression data frame, the order() function can be utilized to sort the data based on the mean_count column in descending order. Subsequently, the top 10 rows can be extracted. The following steps outline this process:
 ```{r}
 # Read in the gene expression data
@@ -115,7 +117,7 @@ top_10_genes
 
 - top_10_genes: This stores the resulting data frame containing the top 10 genes, and the final line displays it.
 
-## Step 4
+### Step 4
 The next step is to estimate the number of genes with a mean that is less than 10.This can be done with the help of the running the codes given below 
 ```{r}
 #calculate the mean counts of the genes given in the list 
@@ -142,7 +144,7 @@ This code functions to find out the genes from the given data frame (gene_expres
 To determine the number of genes that have mean values less than 10, we so the sum total of the categories that is done with the help of the code given above, which is 35988.
 
 
-#Step 5
+### Step 5
 This step involves the construction of the histogram which is a bar graph representation of the mean expression values .
 
 ```{r}
@@ -160,7 +162,7 @@ hist(gene_expression$mean_count,xlab="mean expression value", main="Histogram of
 **code explanation:**
 The code given above is used to generate a histogram of the mean expression values where in the code the function "hist" is used to produce a histogram for the specified data , that is, gene_expression. in the code the main heading for the graph and the x- axis headings are also specified.
 
-#Step 6
+### Step 6
 ```{r}
 #Import the csv file
 growth_data <- read.csv("growth_data.csv")
