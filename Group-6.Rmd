@@ -113,23 +113,12 @@ top_10_genes
 
 - gene_expression[...]: This uses the ordered indices to subset the gene_expression data frame, sorting the rows based on mean expression.
 
-- [1:10, ]: This selects the first 10 rows of the sorted data frame, which correspond to the genes with the highest mean expression.
+- ([1:10, ]): This selects the first 10 rows of the sorted data frame, which correspond to the genes with the highest mean expression.
 
 - top_10_genes: This stores the resulting data frame containing the top 10 genes, and the final line displays it.
 
 ### Step 4
-The next step is to estimate the number of genes with a mean that is less than 10. This can be done with the help of the running the codes given below:
-
-```{r}
-#Find the mean count find that have mean values less than 10 
-gene_expression$mean_count < 10
-```
-
-**Code Description:**
-
-This code functions to find out the genes from the given data frame (gene_expression)which have mean values which are less than 10.with this code we can specifying to find the mean values that are less than 10 in the mean_count column  that is created in the gene_expression data frame ,and then represent it in the form of true/ false.
-"true" represents that mean value is less than 10
-"False " value means that the mean value is more than 10.
+The next step is to estimate the number of genes with a mean that is less than 10. This can be done with the help of the codes given below:
 
 ```{r}
 # Count the number of genes with a mean expression < 10
@@ -153,7 +142,7 @@ hist(gene_expression$mean_count,
      main = "Histogram of Mean Gene Expression Values", 
      xlab = "Mean Expression Value", 
      ylab = "Frequency", 
-     col = "purple", 
+     col = "orange", 
      border = "black")
 ```
 
@@ -162,7 +151,7 @@ The code given above is used to generate a histogram of the mean expression valu
 - hist(): This function generates the histogram.
 - main =: Sets the title of the plot.
 - xlab = and ylab =: Label the x-axis and y-axis.
-- col = "purple": Sets the color of the bars.
+- col = "orange": Sets the color of the bars.
 - border = "black": Adds a black border to the bars for better visualization.
 
 ### Step 6
@@ -171,7 +160,7 @@ The code given above is used to generate a histogram of the mean expression valu
 growth_data <- read.csv("growth_data.csv")
 ```
 
-**code explanation**
+**Code Explanation:**
 
 The code "read.csv" given above is used to import the csv file named growth_data.csv and converts it into R object , where it is saved as growth_data.
 
@@ -187,44 +176,128 @@ colnames(growth_data)
 The code given above is used to list the column names and that is done with the help of the function "colnames" after which we also specify the name of the data frame ,that is growth_data.
 
 ### Step 7
-This step calculates the mean and standard deviation of tree circumference at the start and end end of the study at both sites
+This step calculates the mean and standard deviation of tree circumference at the start and end end of the study at both sites. 
 ```{r}
+# Install new packages
+install.packages("dplyr")
+install.packages("tidyr")
 
-#calculates the mean for the circumference over the years
-colMeans(growth_data[, 3:6])
+# Load necessary library 
+library(dplyr)
+
+# Ensure the circumference columns are numeric
+growth_data$Circumf_2005_cm <- as.numeric(growth_data$Circumf_2005_cm)
+growth_data$Circumf_2020_cm <- as.numeric(growth_data$Circumf_2020_cm)
+# Calculate mean and standard deviation for both years at each site
+summary_stats <- growth_data %>%
+  group_by(Site) %>%
+  summarise(
+    Mean_Circumf_2005 = mean(Circumf_2005_cm, na.rm = TRUE),
+    SD_Circumf_2005 = sd(Circumf_2005_cm, na.rm = TRUE),
+    Mean_Circumf_2020 = mean(Circumf_2020_cm, na.rm = TRUE),
+    SD_Circumf_2020 = sd(Circumf_2020_cm, na.rm = TRUE)
+  )
+# Print the summary statistics
+print(summary_stats)
+
 ```
-**Code Explanation*
-"3:6" selects the columns from 3 to 6 only while "," selects all the data in the respective columns. "colMeans" is used to calculate the mean across all the data in the selected columns and rows
+**Code Explanation:**
+This command installs the dplyr package in R.
+dplyr is a popular R package used for data manipulation. It provides a range of functions to efficiently filter, select, mutate, arrange, and summarize data.
+Installing the package ensures that its functions are available to be used in the R environment.
+
+The next command installs the tidyr package in R.
+tidyr is an R package designed to help tidy data, making it easier to work with. It offers functions to reshape messy data into a more structured format (e.g., wide or long formats), which is critical for analysis.
+Installing tidyr ensures that tools like gather(), spread(), pivot_longer(), and pivot_wider() are available for use in your code.
+
+- Loading the dplyr Library: The code first loads the dplyr library, which is necessary for data manipulation. dplyr provides functions like group_by(), summarise(), and the pipe operator (%>%), all of which are used in this code to handle the dataset.
+- Ensuring Columns are Numeric: The columns Circumf_2005_cm and Circumf_2020_cm are converted to numeric using the as.numeric() function. This step ensures that these columns can be used for calculations such as the mean and standard deviation. If these columns were initially non-numeric (e.g., due to text or missing values), this conversion handles that issue.
+- The code uses dplyr's group_by() and summarise() functions to calculate summary statistics for each site. It groups the data by the Site column and then calculates the following for each site:
+
+1. The mean circumference for 2005.
+2. The standard deviation of the circumferences for 2005.
+3. The mean circumference for 2020.
+4. The standard deviation of the circumferences for 2020.
+
+- Finally, the calculated summary statistics (mean and standard deviation for both years) are printed. The result is a table that provides insight into the tree growth patterns for each site in both 2005 and 2020.
+
+### Step 8
+This step involves the making of a box plot of tree circumference at the start and end of the study. The following code is used to make the box plot:
 ```{r}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
 
-#Calculates the standard deviation
-apply(growth_data[, 3:6], 2,sd)
+# Reshape the data into a long format for easier plotting
+long_growth_data <- growth_data %>%
+  select(Site, Circumf_2005_cm, Circumf_2020_cm) %>%
+  pivot_longer(cols = c(Circumf_2005_cm, Circumf_2020_cm), 
+               names_to = "Year", 
+               values_to = "Circumference") %>%
+  mutate(Year = ifelse(Year == "Circumf_2005_cm", "2005", "2020"))
+
+# Create the box plot
+ggplot(long_growth_data, aes(x = Year, y = Circumference, fill = Site)) +
+  geom_boxplot() +
+  labs(title = "Tree Circumference at Start (2005) and End (2020) of Study",
+       x = "Year",
+       y = "Tree Circumference (cm)") +
+  theme_minimal()
 ```
 
-**Code Explanation**
- selects all data from all rows in columns 3 to 6 and calculates the standard deviation, the number 2 refers to column selection only and apply() is used to apply the sd function to each column
+**Code Explanation:**
+The code first loads three libraries:
 
-##Step 8
+1. ggplot2: Used for creating visualizations in R, including box plots.
+2. dplyr: A data manipulation library used for filtering, selecting, and reshaping data.
+3. tidyr: A library used to reshape data, particularly for tasks like converting between wide and long formats.
+
+The data is reshaped into a long format to make it easier to plot multiple years in a single graph. This involves:
+
+- Selecting the Site, Circumf_2005_cm, and Circumf_2020_cm columns from the growth_data dataset.
+- Using the pivot_longer() function to convert the data from wide format (separate columns for 2005 and 2020 circumferences) to long format (a single Year column indicating whether the data is from 2005 or 2020, and a Circumference column for the actual measurements).
+- The mutate() function is used to change the Year values from "Circumf_2005_cm" and "Circumf_2020_cm" to "2005" and "2020", making the years easier to understand in the plot.
+
+A box plot is generated using the ggplot2 library. The ggplot() function takes long_growth_data as input and specifies:
+
+- aes(x = Year, y = Circumference, fill = Site): This sets the aesthetics (variables for the plot). The x-axis will represent the Year, the y-axis will show the Circumference, and the Site will be used to differentiate colors for different sites.
+- geom_boxplot(): Adds the actual box plots for each year, separated by site.
+- labs(): Sets the title of the plot as well as the labels for the x and y axes.
+- theme_minimal(): Applies a minimal theme to the plot, giving it a clean appearance with less clutter.
+
+This code reshapes the dataset and creates a box plot to compare tree circumferences in 2005 and 2020, grouped by site. The box plot visually represents the distribution of tree circumferences for each year, allowing for easy comparison between the start and end of the study across different sites.
+
+### Step 9
+This step involves the calculation of mean growth over the last 10 years at each site. The following code calculates how much the trees at each site have grown between 2010 and 2020, then computes the average growth for each site. The output is a summary of the mean growth per site over the specified 10-year period.
+
 ```{r}
-#Creation of boxplot of tree circumference at the start and end of the study at both sites.
-boxplot(growth_data[, 3:6])
+# Calculate the growth over the last 10 years (2020 - 2010)
+growth_data$Growth_2010_2020 <- growth_data$Circumf_2020_cm - growth_data$Circumf_2010_cm
+
+# Calculate the mean growth for each site
+mean_growth <- growth_data %>%
+  group_by(Site) %>%
+  summarise(Mean_Growth_2010_2020 = mean(Growth_2010_2020, na.rm = TRUE))
+
+# View the result
+print(mean_growth)
+
+
 ```
 
-**Code Explanation**
-Code retrieves all the data from columns 3 to 6 and plots a box plot for each column
+**Code Explanation:**
+The code calculates the tree growth over the last 10 years (from 2010 to 2020) for each tree. This is done by subtracting the circumference measured in 2010 (Circumf_2010_cm) from the circumference measured in 2020 (Circumf_2020_cm), creating a new column called Growth_2010_2020 in the growth_data dataset. This new column represents the growth (in cm) over that period.
+The code then calculates the mean growth for each site by:
 
-##Step 9
-```{r}
-#Calulates the average over the last 10 years
-mean(c(growth_data[,4], growth_data[,5], growth_data[,6]))
-```
+- Grouping the data by Site using the group_by() function. This ensures that the following calculations are done separately for each site.
+- Using the summarise() function to calculate the mean of the Growth_2010_2020 column for each group (site). The na.rm = TRUE argument is used to exclude any missing values (NA) from the calculation.
 
-**Code Explanation**
-Code retrieves the data from all the rows in selected columns 4,5 and 6. These columns were selected as it contained the data for the last 10 years. The function c combines all the data together for ease of calculation and the function mean is used to calculate the mean of the selected data
-
+This step creates a new data frame, mean_growth, where each row corresponds to a site, and the column Mean_Growth_2010_2020 contains the average growth for that site.
+Finally, the print() function is used to display the mean_growth data frame, which contains the mean growth for each site over the period 2010 to 2020.
 
 ### Step 10
-
+This step involves the estimation of p-value using t.test to show that the growth is different at the two sites. The code below is used to test if there is a statistically significant difference in the growth of trees between two different sites over the period from 2010 to 2020. The t-test provides insights into whether the observed difference in growth is likely due to random variation or reflects a true difference between the sites.
 ```{r}
 
 # Step 1: Perform a t-test comparing the growth between the two sites
@@ -235,6 +308,8 @@ print(t_test_result)
 
 ```
 **Code Explanation:**
+
+The code performs a t-test to compare the growth from 2010 to 2020 (Growth_2010_2020) between two different sites in the growth_data dataset. The t-test is used to determine if there is a significant difference in growth between the two sites.
 
 - t.test: This function in R performs a t-test, which is used to test if there is a significant difference between the means of two groups.
 - Growth_2010_2020 ~ Site:
@@ -247,33 +322,35 @@ print(t_test_result)
 Welch's t-test is used here because it does not assume equal variances between the two groups, which makes it more robust in cases where the variances might differ.
 
 The output of the Welch Two Sample t-test shows the following key points:
-•	t-value: **1.8882**
-•	Degrees of freedom (df): **87.978**
-•	p-value: **0.06229**
+-	t-value: **1.8882**
+-	Degrees of freedom (df): **87.978**
+-	p-value: **0.06229**
 Interpretation:
-•	P-value: The p-value of 0.06229 is slightly above the common significance threshold of 0.05. This means that there is not enough statistical evidence at the 5% level to reject the null hypothesis that the mean 10-year growth is the same at both sites. However, the p-value is relatively close to 0.05, suggesting a potential trend towards a difference in growth between the two sites, but not at a statistically significant level.
-•	Mean growth:
- o	Northeast site: 42.94 cm
- o	Southwest site: 35.49 cm
+-	P-value: The p-value of 0.06229 is slightly above the common significance threshold of 0.05. This means that there is not enough statistical evidence at the 5% level to reject the null hypothesis that the mean 10-year growth is the same at both sites. However, the p-value is relatively close to 0.05, suggesting a potential trend towards a difference in growth between the two sites, but not at a statistically significant level.
+
+-	Mean growth:
+ 1. Northeast site: 42.94 cm
+ 2.	Southwest site: 35.49 cm
 
 The northeast site appears to have a slightly higher average growth over the 10 years compared to the southwest site, though the difference is not statistically significant at the 5% level.
 
 # PART 2
-
 
 ### Step 1
 
 To download whole set of E. coli. coding DNA sequences, we use the following code:
 
 ```{r}
-# Load the necessary package for file decompression
+# Load the necessary package
+
 library("R.utils")
 
 # Define the URL for the Escherichia coli K-12 substrain MG1655 CDS file
-URL = "http://ftp.ensemblgenomes.org/pub/bacteria/release-53/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655_gca_000005845/cds/Escherichia_coli_str_k_12_substr_mg1655_gca_000005845.ASM584v2.cds.all.fa.gz"
+
+URL="http://ftp.ensemblgenomes.org/pub/bacteria/release-53/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655_gca_000005845/cds/Escherichia_coli_str_k_12_substr_mg1655_gca_000005845.ASM584v2.cds.all.fa.gz"
 
 # Download the CDS file from the URL and save it locally as 'ecoli_cds.fa.gz'
-download.file(URL, destfile = "ecoli_cds.fa.gz")
+download.file(URL,destfile="ecoli_cds.fa.gz")
 
 # Decompress the gzipped file to extract the fasta file (.fa)
 gunzip("ecoli_cds.fa.gz")
@@ -290,10 +367,11 @@ To download whole set of Bifidobacteriaceae bacterium coding DNA sequences, we u
 library("R.utils")
 
 # URL for Bifidobacteriaceae bacterium CDS
+
 URL="https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/bacteria_63_collection/bifidobacteriaceae_bacterium_wp012_gca_003585625/cds/Bifidobacteriaceae_bacterium_wp012_gca_003585625.ASM358562v1.cds.all.fa.gz"
 
 # Download the CDS file
-download.file(URL, destfile="bifido_cds.fa.gz")
+download.file(URL,destfile="bifido_cds.fa.gz")
 
 # Decompress the file
 gunzip("bifido_cds.fa.gz")
@@ -335,7 +413,7 @@ count_CDS <- function(file) {
   return(num_cds)
 }
 
-# Count the number of CDS in E. coli
+# Count the number of CDS in E. coli 
 ecoli_cds_count <- count_CDS("ecoli_cds.fa")
 cat("Number of coding sequences in Escherichia coli:", ecoli_cds_count, "\n")
 
@@ -375,11 +453,14 @@ print(cds_table)
 ```
 
 **Code Explanation:**
+
 - install.packages("dplyr"): This command installs the dplyr package, which is a powerful tool for data manipulation in R. You only need to run this once unless the package is not already installed or needs to be updated.
 - library(dplyr): Loads the dplyr library into the R session so you can use its functions. It’s a popular package for data manipulation, offering tools like filtering, selecting, grouping, and summarizing data.
 - data.frame(): This function creates a data frame, which is a two-dimensional, tabular data structure in R (similar to a spreadsheet or SQL table).
- 1. Organism = c("Escherichia coli", "Bifidobacteriaceae bacterium"): This creates the first column in the data frame called Organism, with the names of two organisms: Escherichia coli and Bifidobacteriaceae bacterium.
- 2. CDS_Count = c(ecoli_cds_count, bifido_cds_count): This creates the second column called CDS_Count, which stores the number of coding sequences (CDS) in each organism. The values come from the previously calculated variables ecoli_cds_count and bifido_cds_count, which hold the CDS counts for Escherichia coli and Bifidobacteriaceae bacterium, respectively.
+ 
+1. Organism = c("Escherichia coli", "Bifidobacteriaceae bacterium"): This creates the first column in the data frame called Organism, with the names of two organisms: Escherichia coli and Bifidobacteriaceae bacterium.
+2. CDS_Count = c(ecoli_cds_count, bifido_cds_count): This creates the second column called CDS_Count, which stores the number of coding sequences (CDS) in each organism. The values come from the previously calculated variables ecoli_cds_count and bifido_cds_count, which hold the CDS counts for Escherichia coli and Bifidobacteriaceae bacterium, respectively.
+
 - print(cds_table): Displays the contents of the cds_table data frame in the console. This allows you to see a side-by-side comparison of the number of CDSs in the two organisms.
 
 The difference between the 2 organisms is clear in terms of number of sequences. E. coli. has more number of coding sequences than Bifidobacteriaceae bacterium. This can also be seen using the following code:
@@ -396,49 +477,97 @@ if (ecoli_cds_count > bifido_cds_count) {
 }
 ```
 
-##Step 2
+### Step 2
 Calculation of amount of coding DNA present in total for both organisms and presentation of the data in the form of a tabular column.
 
 ```{r}
 
-#code to delegate bifido_cds.fa as cds1 and ecoli_cds.fa
-cds1 <- seqinr::read.fasta("bifido_cds.fa")
-cds2 <- seqinr::read.fasta("ecoli_cds.fa")
+# Load the necessary library
+library(seqinr)
+
+# Function to calculate the total length of coding DNA in a fasta file
+total_coding_DNA <- function(file) {
+  # Read the fasta file
+  fasta_content <- read.fasta(file, seqtype = "DNA")
+  
+  # Calculate the length of each sequence and sum them up
+  total_dna <- sum(sapply(fasta_content, length))
+  
+  return(total_dna)
+}
+
+# Calculate the total coding DNA in Escherichia coli
+ecoli_total_dna <- total_coding_DNA("ecoli_cds.fa")
+cat("Total coding DNA in Escherichia coli:", ecoli_total_dna, "base pairs\n")
+
+# Calculate the total coding DNA in Bifidobacteriaceae bacterium
+bifido_total_dna <- total_coding_DNA("bifido_cds.fa")
+cat("Total coding DNA in Bifidobacteriaceae bacterium:", bifido_total_dna, "base pairs\n")
 
 ```
-**Code Explanation**
-The code above uses the read.fasta function from seqinr package to read the uncompressed files "bifido_cds.fa" and "ecoli_cds.fa" for both the organisms and stores it under variable names cds1 and cds2 for ease of access.
 
-```{r}
-#code to calculate the amount of coding DNA
-The difference between both of the organisms is that the amount of coding DNA in "bifido_cds.fa" is more than that in "Ecoli_cds.fa"
+**Code Explanation:**
 
-len1 <- as.numeric(summary(cds1)[,1])
-sum(len1)
-len2 <- as.numeric(summary(cds2)[,1])
-sum(len2)
-```
+The code begins by loading the seqinr library, which provides tools for handling biological sequences, such as reading and manipulating FASTA files (a standard format for representing nucleotide or protein sequences).
 
-**Code Explanation
-cds1 and cds2 refers to the list of DNA coding sequences obtained earlier from the fasta file. The [,1] selects the first column only and the summary function extracts this data which is the length and stores it in the variables len1 and len2. The sum function calculates the total number of base pairs for len1 and len2 when applied.
+The function total_coding_DNA() is created to calculate the total length of coding DNA sequences in a given FASTA file.
+
+Input: The function takes a file name (in this case, a FASTA file) as its argument.
+- Step 1: It reads the contents of the FASTA file using read.fasta(), which loads the DNA sequences into R as a list, with each entry representing a sequence. The seqtype = "DNA" argument specifies that the sequences in the file are DNA sequences.
+- Step 2: It calculates the length of each sequence in the FASTA file by applying the length() function to each sequence in the list using sapply(). This creates a list of lengths.
+- Step 3: The function sums up the lengths of all sequences using sum(), yielding the total length of coding DNA in base pairs.
+- Output: The total length of coding DNA is returned by the function.
+
+The function total_coding_DNA() is called with the argument "ecoli_cds.fa", which represents the FASTA file containing the coding DNA sequences of Escherichia coli. The result, stored in the variable ecoli_total_dna, is the total length of coding DNA for E. coli. This result is printed using the cat() function, showing the total number of base pairs.
+
+Similarly, the function total_coding_DNA() is called with the argument "bifido_cds.fa", representing the FASTA file for Bifidobacteriaceae bacterium. The total length of coding DNA for this organism is stored in bifido_total_dna and printed with cat().
+
+The code below shows, how to create a table for the above obtained data.
 
 ```{r}
 # Load necessary library for data manipulation
 library(dplyr)
 
-# Create a table to compare the number of CDSs in both organisms
-cds_table <- data.frame(
+# Create a table to compare the total coding DNA in both organisms
+dna_table <- data.frame(
   Organism = c("Escherichia coli", "Bifidobacteriaceae bacterium"),
-  CDS_Count = c(ecoli_cds_count, bifido_cds_count)
+  Total_Coding_DNA = c(ecoli_total_dna, bifido_total_dna)
 )
 
 # Display the table
-print(cds_table)
+print(dna_table)
+
 ```
 
-**Code Explanation**
-This code creates a data frame called "cds_table" to compare the coding sequences between the organisms. The library(dplyr) loads the dplyr package for potential data manipulation and a table is created using the values stored in the variables "ecoli_cds_count" and "bifido_cds_count". 
-the data.frame function organises the name in one column and the cds counts in another. The print function displays the table.
+**Code Explanation:**
+The code starts by loading the dplyr library, which is commonly used for data manipulation tasks such as creating and modifying tables.
+The data.frame() function is used to create a table that compares the total coding DNA in two organisms: Escherichia coli and Bifidobacteriaceae bacterium. The table contains two columns:
+
+- Organism: A vector that lists the names of the two organisms ("Escherichia coli" and "Bifidobacteriaceae bacterium").
+- Total_Coding_DNA: A vector that holds the previously calculated total coding DNA lengths for these organisms (ecoli_total_dna for Escherichia coli and bifido_total_dna for Bifidobacteriaceae bacterium).
+
+This creates a data frame (dna_table) with one row for each organism and a corresponding value for its total coding DNA.
+
+The print() function is used to display the dna_table, showing the names of the organisms alongside their respective total coding DNA values.
+
+The code creates a simple comparison table showing the total coding DNA for two different organisms and prints it to the console for easy visualization. It helps compare the lengths of coding DNA between Escherichia coli and Bifidobacteriaceae bacterium.
+
+```{r}
+# Describe the difference in total coding DNA between the two organisms
+if (ecoli_total_dna > bifido_total_dna) {
+  cat("Escherichia coli has more coding DNA than Bifidobacteriaceae bacterium.\n")
+} else if (ecoli_total_dna < bifido_total_dna) {
+  cat("Bifidobacteriaceae bacterium has more coding DNA than Escherichia coli.\n")
+} else {
+  cat("Both organisms have the same amount of coding DNA.\n")
+}
+```
+
+**Code Explanation:**
+The code uses a conditional statement (an if-else structure) to compare the total coding DNA lengths of Escherichia coli and Bifidobacteriaceae bacterium and provide a descriptive output based on the comparison.
+
+This code provides a clear and concise comparison of the total coding DNA lengths between two organisms. Depending on the values of ecoli_total_dna and bifido_total_dna, it outputs an appropriate message to describe which organism has more coding DNA or if they are equal. This helps in understanding the genetic differences between the two organisms based on their coding DNA content.
+
 
 
 ###Question 3
