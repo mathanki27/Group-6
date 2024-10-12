@@ -118,17 +118,10 @@ top_10_genes
 - top_10_genes: This stores the resulting data frame containing the top 10 genes, and the final line displays it.
 
 ### Step 4
-The next step is to estimate the number of genes with a mean that is less than 10.This can be done with the help of the running the codes given below 
-```{r}
-#calculate the mean counts of the genes given in the list 
-gene_expression$mean_count <- rowMeans(gene_expression)
-```
-**code explanation:**
-The code rowMeans(gene_expression)is used to find the mean of all the values in a row for each gene given and this is done across all the columns or the genes present in the data.
+The next step is to estimate the number of genes with a mean that is less than 10. This can be done with the help of the running the codes given below:
 
-gene_expression$mean_count is the code which directs the production of a new category in the data frame by the name of mean_count and all the dta produced by the code rowMeans(gene_expression) is shown under this particular category
 ```{r}
-#find the mean count find that have mean values less than 10 
+#Find the mean count find that have mean values less than 10 
 gene_expression$mean_count < 10
 ```
 
@@ -139,31 +132,38 @@ This code functions to find out the genes from the given data frame (gene_expres
 "False " value means that the mean value is more than 10.
 
 ```{r}
-# Count the number of genes_expression with mean_count less than 10
- sum(gene_expression$mean_count < 10, na.rm = TRUE)
+# Count the number of genes with a mean expression < 10
+num_genes_below_10 <- sum(gene_expression$mean_count < 10)
+
+# Display the result
+num_genes_below_10
 ```
 **Code Explanation:**
 To determine the number of genes that have mean values less than 10, we so the sum total of the categories that is done with the help of the code given above, which is 35988.
-
+- gene_expression$mean_count < 10: This creates a logical vector where each gene's mean expression is checked to see if it's less than 10.
+- sum(...): This counts the number of TRUE values in the logical vector, which corresponds to the number of genes with a mean expression less than 10.
 
 ### Step 5
 This step involves the construction of the histogram which is a bar graph representation of the mean expression values .
 
-```{r}
-#Retreive all the mean count values given in the mean_count column
-gene_expression[,c("mean_count")]
-```
-**Code Explanation:**
-the code given above is used to specify the rows and columns that are being considered.according to the code , we are considering the all the rows and the specific column of mean_count which represents the mean expression values.
-
 
 ```{r}
-# histogram of mean gene expression values
-hist(gene_expression$mean_count,xlab="mean expression value", main="Histogram of Mean Gene Expression Values")
+# Create a histogram of the mean expression values
+hist(gene_expression$mean_count, 
+     main = "Histogram of Mean Gene Expression Values", 
+     xlab = "Mean Expression Value", 
+     ylab = "Frequency", 
+     col = "purple", 
+     border = "black")
 ```
 
 **Code Explanation:**
-The code given above is used to generate a histogram of the mean expression values where in the code the function "hist" is used to produce a histogram for the specified data , that is, gene_expression. in the code the main heading for the graph and the x- axis headings are also specified.
+The code given above is used to generate a histogram of the mean expression values where in the code the function "hist" is used to produce a histogram for the specified data , that is, gene_expression. In the code the main heading for the graph and the x and y axis headings are also specified.
+- hist(): This function generates the histogram.
+- main =: Sets the title of the plot.
+- xlab = and ylab =: Label the x-axis and y-axis.
+- col = "purple": Sets the color of the bars.
+- border = "black": Adds a black border to the bars for better visualization.
 
 ### Step 6
 ```{r}
