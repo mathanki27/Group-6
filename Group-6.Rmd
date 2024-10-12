@@ -186,20 +186,41 @@ colnames(growth_data)
 
 The code given above is used to list the column names and that is done with the help of the function "colnames" after which we also specify the name of the data frame ,that is growth_data.
 
+### Step 7
+This step calculates the mean and standard deviation of tree circumference at the start and end end of the study at both sites
+```{r}
 
-
-# selects all data from all rows in columns 3 to 6 and calculates the mean
+#calculates the mean for the circumference over the years
 colMeans(growth_data[, 3:6])
+```
+**Code Explanation*
+"3:6" selects the columns from 3 to 6 only while "," selects all the data in the respective columns. "colMeans" is used to calculate the mean across all the data in the selected columns and rows
+```{r}
 
-# selects all data from all rows in columns 3 to 6 and calculates the standard deviation, the 2 refers to column selection and apply() is used to apply the sd function to each column
-
+#Calculates the standard deviation
 apply(growth_data[, 3:6], 2,sd)
+```
 
-#code used to create a boxplot from columns 3 to 6
+**Code Explanation**
+ selects all data from all rows in columns 3 to 6 and calculates the standard deviation, the number 2 refers to column selection only and apply() is used to apply the sd function to each column
+
+##Step 8
+```{r}
+#Creation of boxplot of tree circumference at the start and end of the study at both sites.
 boxplot(growth_data[, 3:6])
+```
 
-#code combines columns 4, 5 and 6 and calculates the mean
+**Code Explanation**
+Code retrieves all the data from columns 3 to 6 and plots a box plot for each column
+
+##Step 9
+```{r}
+#Calulates the average over the last 10 years
 mean(c(growth_data[,4], growth_data[,5], growth_data[,6]))
+```
+
+**Code Explanation**
+Code retrieves the data from all the rows in selected columns 4,5 and 6. These columns were selected as it contained the data for the last 10 years. The function c combines all the data together for ease of calculation and the function mean is used to calculate the mean of the selected data
 
 
 ### Step 10
@@ -373,5 +394,49 @@ if (ecoli_cds_count > bifido_cds_count) {
 }
 
 ```
+
+##Step 2
+Calculation of amount of coding DNA present in total for both organisms and presentation of the data in the form of a tabular column.
+
+```{r}
+
+#code to delegate bifido_cds.fa as cds1 and ecoli_cds.fa
+cds1 <- seqinr::read.fasta("bifido_cds.fa")
+cds2 <- seqinr::read.fasta("ecoli_cds.fa")
+
+```
+**Code Explanation**
+The code above uses the read.fasta function from seqinr package to read the uncompressed files "bifido_cds.fa" and "ecoli_cds.fa" for both the organisms and stores it under variable names cds1 and cds2 for ease of access.
+
+```{r}
+#code to calculate the amount of coding DNA
+The difference between both of the organisms is that the amount of coding DNA in "bifido_cds.fa" is more than that in "Ecoli_cds.fa"
+
+len1 <- as.numeric(summary(cds1)[,1])
+sum(len1)
+len2 <- as.numeric(summary(cds2)[,1])
+sum(len2)
+```
+
+**Code Explanation
+cds1 and cds2 refers to the list of DNA coding sequences obtained earlier from the fasta file. The [,1] selects the first column only and the summary function extracts this data which is the length and stores it in the variables len1 and len2. The sum function calculates the total number of base pairs for len1 and len2 when applied.
+
+```{r}
+# Load necessary library for data manipulation
+library(dplyr)
+
+# Create a table to compare the number of CDSs in both organisms
+cds_table <- data.frame(
+  Organism = c("Escherichia coli", "Bifidobacteriaceae bacterium"),
+  CDS_Count = c(ecoli_cds_count, bifido_cds_count)
+)
+
+# Display the table
+print(cds_table)
+```
+
+**Code Explanation**
+This code creates a data frame called "cds_table" to compare the coding sequences between the organisms. The library(dplyr) loads the dplyr package for potential data manipulation and a table is created using the values stored in the variables "ecoli_cds_count" and "bifido_cds_count". 
+the data.frame function organises the name in one column and the cds counts in another. The print function displays the table.
 
 
