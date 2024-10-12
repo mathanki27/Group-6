@@ -202,4 +202,176 @@ boxplot(growth_data[, 3:6])
 mean(c(growth_data[,4], growth_data[,5], growth_data[,6]))
 
 
+### Step 10
+
+```{r}
+
+# Step 1: Perform a t-test comparing the growth between the two sites
+t_test_result <- t.test(Growth_2010_2020 ~ Site, data = growth_data)
+
+# Step 2: View the p-value and other test results
+print(t_test_result)
+
+```
+**Code Explanation:**
+
+- t.test: This function in R performs a t-test, which is used to test if there is a significant difference between the means of two groups.
+- Growth_2010_2020 ~ Site:
+  1. Growth_2010_2020 is the numeric variable representing the growth in tree circumference over the last 10 years (2010 to 2020).
+  2. Site is a factor variable that indicates which site each growth observation comes from. In this case, you have two sites: "northeast" and "southwest."
+  3. The formula Growth_2010_2020 ~ Site tells R to compare the Growth_2010_2020 variable between the two levels of the Site factor (northeast vs southwest).
+-	data = growth_data: This specifies that both Growth_2010_2020 and Site are columns in the growth_data data frame. It tells the t.test function to look for these variables in that data frame.
+
+**Welch Two Sample t-test:**
+Welch's t-test is used here because it does not assume equal variances between the two groups, which makes it more robust in cases where the variances might differ.
+
+The output of the Welch Two Sample t-test shows the following key points:
+•	t-value: **1.8882**
+•	Degrees of freedom (df): **87.978**
+•	p-value: **0.06229**
+Interpretation:
+•	P-value: The p-value of 0.06229 is slightly above the common significance threshold of 0.05. This means that there is not enough statistical evidence at the 5% level to reject the null hypothesis that the mean 10-year growth is the same at both sites. However, the p-value is relatively close to 0.05, suggesting a potential trend towards a difference in growth between the two sites, but not at a statistically significant level.
+•	Mean growth:
+ o	Northeast site: 42.94 cm
+ o	Southwest site: 35.49 cm
+
+The northeast site appears to have a slightly higher average growth over the 10 years compared to the southwest site, though the difference is not statistically significant at the 5% level.
+
+# PART 2
+
+
+### Step 1
+
+To download whole set of E. coli. coding DNA sequences, we use the following code:
+
+```{r}
+# Load the necessary package for file decompression
+library("R.utils")
+
+# Define the URL for the Escherichia coli K-12 substrain MG1655 CDS file
+URL = "http://ftp.ensemblgenomes.org/pub/bacteria/release-53/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655_gca_000005845/cds/Escherichia_coli_str_k_12_substr_mg1655_gca_000005845.ASM584v2.cds.all.fa.gz"
+
+# Download the CDS file from the URL and save it locally as 'ecoli_cds.fa.gz'
+download.file(URL, destfile = "ecoli_cds.fa.gz")
+
+# Decompress the gzipped file to extract the fasta file (.fa)
+gunzip("ecoli_cds.fa.gz")
+
+# List all files in the current working directory to confirm successful extraction
+list.files()
+
+```
+
+To download whole set of Bifidobacteriaceae bacterium coding DNA sequences, we use the following code:
+
+```{r}
+# Load the necessary package for file decompression
+library("R.utils")
+
+# URL for Bifidobacteriaceae bacterium CDS
+URL="https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/bacteria_63_collection/bifidobacteriaceae_bacterium_wp012_gca_003585625/cds/Bifidobacteriaceae_bacterium_wp012_gca_003585625.ASM358562v1.cds.all.fa.gz"
+
+# Download the CDS file
+download.file(URL, destfile="bifido_cds.fa.gz")
+
+# Decompress the file
+gunzip("bifido_cds.fa.gz")
+
+# List the files in the current directory
+list.files()
+
+```
+
+To see the number of coding sequences in the organisms, we use the following code:
+
+```{r}
+# Load necessary library
+library("seqinr")
+
+# Reading of the uncompressed files for both the bacteria
+cds <- seqinr::read.fasta("ecoli_cds.fa")
+cds1 <- seqinr::read.fasta("bifido_cds.fa")
+
+# Shows the coding sequences in E.coli and Bifidobacteriaceae
+length(cds)
+length(cds1)
+```
+
+A more refined code can be used to display the number of sequences in the downloaded coding sequence of both the organisms.
+
+```{r}
+# Load the necessary library
+library(seqinr)
+
+# Function to count the number of coding sequences in a fasta file using seqinr
+count_CDS <- function(file) {
+  # Read the fasta file
+  fasta_content <- read.fasta(file, seqtype = "DNA")
+  
+  # The length of fasta_content gives the number of sequences (CDSs)
+  num_cds <- length(fasta_content)
+  
+  return(num_cds)
+}
+
+# Count the number of CDS in E. coli
+ecoli_cds_count <- count_CDS("ecoli_cds.fa")
+cat("Number of coding sequences in Escherichia coli:", ecoli_cds_count, "\n")
+
+# Count the number of CDS in Bifidobacteriaceae bacterium
+bifido_cds_count <- count_CDS("bifido_cds.fa")
+cat("Number of coding sequences in Bifidobacteriaceae bacterium:", bifido_cds_count, "\n")
+
+```
+**Code Explanation:**
+
+- The seqinr library provides tools for biological sequence analysis, such as reading, writing, and manipulating sequence data in various formats, including FASTA files.
+- count_CDS: This function takes a FASTA file as an argument and returns the number of coding sequences (CDS) present in that file.
+- read.fasta(file, seqtype = "DNA"): Reads the FASTA file specified by file. It is instructed to treat the sequences as DNA (seqtype = "DNA").
+- fasta_content holds all the sequences from the file.
+- length(fasta_content): This counts the number of sequences in the fasta_content list, which is equivalent to the number of CDS in the file.
+- The function returns the number of sequences (CDS) found in the file.
+- count_CDS("ecoli_cds.fa"): Calls the count_CDS function and passes the E. coli CDS FASTA file (ecoli_cds.fa) as the input. The result is stored in ecoli_cds_count.
+- cat(): Prints a message to the console displaying the number of coding sequences in the E. coli genome.
+- Similar to the previous step, this section reads the FASTA file for Bifidobacteriaceae bacterium (bifido_cds.fa), counts the CDS, and prints the result.
+
+To create a table for the number of coding sequences, we will download a new package called "dplyr" and we use the following code:
+```{r}
+# Download the package
+install.packages("dplyr")
+
+# Load necessary library for data manipulation
+library(dplyr)
+
+# Create a table to compare the number of CDSs in both organisms
+cds_table <- data.frame(
+  Organism = c("Escherichia coli", "Bifidobacteriaceae bacterium"),
+  CDS_Count = c(ecoli_cds_count, bifido_cds_count)
+)
+
+# Display the table
+print(cds_table)
+```
+
+**Code Explanation:**
+- install.packages("dplyr"): This command installs the dplyr package, which is a powerful tool for data manipulation in R. You only need to run this once unless the package is not already installed or needs to be updated.
+- library(dplyr): Loads the dplyr library into the R session so you can use its functions. It’s a popular package for data manipulation, offering tools like filtering, selecting, grouping, and summarizing data.
+- data.frame(): This function creates a data frame, which is a two-dimensional, tabular data structure in R (similar to a spreadsheet or SQL table).
+ 1. Organism = c("Escherichia coli", "Bifidobacteriaceae bacterium"): This creates the first column in the data frame called Organism, with the names of two organisms: Escherichia coli and Bifidobacteriaceae bacterium.
+ 2. CDS_Count = c(ecoli_cds_count, bifido_cds_count): This creates the second column called CDS_Count, which stores the number of coding sequences (CDS) in each organism. The values come from the previously calculated variables ecoli_cds_count and bifido_cds_count, which hold the CDS counts for Escherichia coli and Bifidobacteriaceae bacterium, respectively.
+- print(cds_table): Displays the contents of the cds_table data frame in the console. This allows you to see a side-by-side comparison of the number of CDSs in the two organisms.
+
+The difference between the 2 organisms is clear in terms of number of sequences. E. coli. has more number of coding sequences than Bifidobacteriaceae bacterium. This can also be seen using the following code:
+```{r}
+# Describe the difference between the two organisms
+if (ecoli_cds_count > bifido_cds_count) {
+  cat("Escherichia coli has more coding sequences (CDSs) than Bifidobacteriaceae bacterium.\n")
+} else if (ecoli_cds_count < bifido_cds_count) {
+  cat("Bifidobacteriaceae bacterium has more coding sequences (CDSs) than Escherichia coli.\n")
+} else {
+  cat("Both organisms have the same number of coding sequences (CDSs).\n")
+}
+
+```
+
 
