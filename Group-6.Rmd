@@ -387,6 +387,8 @@ The difference between the 2 organisms is clear in terms of number of sequences.
 # Describe the difference between the two organisms
 if (ecoli_cds_count > bifido_cds_count) {
   cat("Escherichia coli has more coding sequences (CDSs) than Bifidobacteriaceae bacterium.\n")
+
+
 } else if (ecoli_cds_count < bifido_cds_count) {
   cat("Bifidobacteriaceae bacterium has more coding sequences (CDSs) than Escherichia coli.\n")
 } else {
@@ -437,5 +439,156 @@ print(cds_table)
 **Code Explanation**
 This code creates a data frame called "cds_table" to compare the coding sequences between the organisms. The library(dplyr) loads the dplyr package for potential data manipulation and a table is created using the values stored in the variables "ecoli_cds_count" and "bifido_cds_count". 
 the data.frame function organises the name in one column and the cds counts in another. The print function displays the table.
+
+
+###Question 3
+The first part of the question involves the estimation of the length of the coding sequence in E.coli.
+```{r}
+#Loading the seqinr package
+library(seqinr)
+
+##Read the fasta file of E.coli
+cds <- seqinr::read.fasta("ecoli_cds.fa")
+
+#Summaries the length of coding sequences
+summary(cds)
+```
+**code explanation**
+library(seqinr)- this code is used to load the seqinr package which is used in R as it contains various tools which helps in examining and extracting the genomic sequences of diverse organisms.
+
+cds <- seqinr::read.fasta("ecoli_cds.fa")-this function is used to convert and organises the sequences in the fasta file into R and save it into the variable "cds" . read.fasta is a sequinr tool which is used for reading the sequences in fasta file to R.
+
+summary(cds)- this function is used to which is used to summaries various details of the sequences including the length, mode, classes etc.
+
+```{r}
+#Estimate the length of coding sequence in bifidobacterium
+library(seqinr)
+
+#Read the fasta file of Bifidobacterium 
+cds1 <- seqinr::read.fasta("bifido_cds.fa")
+
+#Summaries the length of coding sequences
+summary(cds)
+```
+**code explanation**
+The code chunk above is used to install the seqinr package which consists of various tools like read.fasta which is used to convert the fasta file into R so that the sequences stored in the file can be studied and analysed.
+
+
+The next part to question three is to create boxplot for the coding sequence length in both the organisms
+Create the boxplot for E.coli
+```{r}
+#Read the fasta file of E.coli
+cds <- seqinr::read.fasta("ecoli_cds.fa")
+
+#Summarise the first column as vector
+len <- as.numeric(summary(cds)[,1])
+
+#Generate the boxplot for sequence length of ecoli
+boxplot(len,ylab="sequence length (bp) for E.coli")
+```
+**code explanation**
+cds <- seqinr::read.fasta("ecoli_cds.fa")- this code is used to convert the fasta file containing coding sequences of E.coli in readable R format and then save it as a vector called cds.
+
+len <- as.numeric(summary(cds)[,1])- This function is used to summarise the first column of the data and changes it into numerical vector under "len".
+
+Boxplot function is used to generate the graph for the sequence length for E.coli.
+
+
+Create boxplot for bifidobacterium
+```{r}
+#Read the fasta file of Bifidobacterium
+cds1 <- seqinr::read.fasta("bifido_cds.fa")
+
+#Summarise the first column as vector
+len <- as.numeric(summary(cds1)[,1])
+
+#Generate the boxplot for sequence length of bifidobacterium
+boxplot(len,ylab="sequence length (bp) for bifidobacterium")
+```
+**code explanation**
+similar code chunk is used to create boxplot for the bifidobacterium sequences which involves reading the fasta file into R, summarizing the first column as vector and generate the graph.
+
+
+The next part to question 3 talks about finding the mean and median values of coding sequence length
+```{r}
+#Read the fasta file of E.coli
+cds <- seqinr::read.fasta("ecoli_cds.fa")
+
+#Summaries the first column as vector
+len <- as.numeric(summary(cds)[,1])
+
+#Find the mean of the coding sequence length for E.coli
+mean(len)
+
+#Find the median of the coding sequence length for E.coli
+median(len)
+```
+**code explanation**
+The code chunk used above is used to find the mean and median .First the fasta file is converted to R and then the first column is then summarised as a numerial vector by the name "len" which is then used to obtain the mean and median of the coding sequence length for E.coli, thus the functions mean and median are used respectively.
+
+```{r}
+#Summarise the first column as vector
+len <- as.numeric(summary(cds1)[,1])
+
+#Find the mean of the coding sequence length for Bifidobacterium
+mean(len)
+
+#Find the median of the coding sequence for Bifidobacterium
+median(len)
+```
+**code explanation**
+The code chunk above is used to obtain the mean and median values for the coding sequence lengths of the bifidobacterium.
+
+The next part of the question is to find differences between the two organisms.
+Difference1
+```{r}
+#Find GC content first first sequence of E.coli
+GC(cds[[1]])
+```
+**code explanation**
+The code above is used to calculate the GC  content of sequence 1 of E.coli, which is done with the help of the function GC which tries to fing the number of GC in sequence 1, which is obtained as 0.5151515.
+
+```{r}
+#find GC content in sequence 1 of bifidobaterium
+GC(cds1[[1]])
+```
+**code explanation**
+The code above is used to obtain the GC content in sequence 1 of the bifidobacterium which is obtained to be 0.4494624.Thus it is noted that E.coli sequence 1 contains more of GC content as compared to that of bifidobacterium.
+
+difference2
+```{r}
+#Find the total GC content for E.coli
+GC(unlist(cds[1:4239]))
+```
+**code explanation**
+The code above is used to obtain GC content for all the sequences in E.coli, whic is 0.5193114
+
+```{r}
+#Find the total GC content for bifidobacterium
+GC(unlist(cds1[1:1191]))
+```
+**code explanation**
+The code above is used to obtain the GC content for all sequences in bifidobacterium 0.4427088.this shows that E.coli has more GC content in all sequences when compared to that of bifidobacterium.
+
+Difference 3 
+```{r}
+#Count number of each base in sequence 1 of E.coli
+count(cds[[1]],1)
+```
+**code explanation**
+The code above is used to count each of the bases (A,T,G,C) in the sequence 1 of E.coli bacterium which is obtained to be as A-21, C-22, G-12, t-11.
+
+```{r}
+#Count number of each base in sequence 1 of bifidobacterium
+count(cds1[[1]],1)
+```
+**code explanation**
+The code given above is used to obtain the A,T,G,C content in the first sequence of bifidobacterium, which is obtained to be A-112, c-85, G-124, T-144, Thus can be interpreted that bifidobaterium has more of each base in its first sequence.
+
+
+difference 4
+Apart from these differences ,there are other differences in the sequences of E.coli and bifidobacterium too which include the difference in mean values of the sequence length for both organisms(938.5534,937.1889),difference in the median of the length of sequences of both organisms(831, 795) , the number of sequences(4239,1191), sum of the length of sequences of both bacterium (3978528,1116192) respectively.
+
+
 
 
