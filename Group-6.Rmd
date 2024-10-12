@@ -392,7 +392,6 @@ if (ecoli_cds_count > bifido_cds_count) {
 } else {
   cat("Both organisms have the same number of coding sequences (CDSs).\n")
 }
-
 ```
 
 ##Step 2
