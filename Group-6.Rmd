@@ -802,3 +802,42 @@ The barplot() function is used to create barcharts,xlab="nucleotides" denotes th
 # Differences between the two organisms
 The Ecoli cds DNA composition was around the same for a,c and t values but was slightly higher for g values whereas in the Bifido cds DNA composition there was great variability between the a,c,g and t values.
 Whereas in the amino acid frequencies in both Bifido and Ecoli there was not much variablity seen between the two.
+
+
+
+###Question 5
+This questions demands to generate the codon usage table followed by estimating the codon usage bias for all coding sequences.this also requires to highlight the differences between the codon usage bias of both the organisms and proving the same with the help of plots.
+
+First step involves generating the codon usage list.
+```{r}
+#To generate codon usage list of all sequences for E.coli
+codon_usage_list <- lapply(cds, uco)
+
+#To generate codon usage list of all sequences for bifidobacterium
+codon_usage_list1 <- lapply(cds1, uco)
+```
+**code explanation**
+The code chunk used above is to obtain the codon usage of of both the organisms. 
+lapply() is used to apply a function throughout the data acting on each element in it . and in this case , it is used to apply the uco function to each element in the data cds/cds1 and store the generated data in codon_usage_list/codon_usage_list1.
+
+
+Next step involves the generation of codon usage table .
+```{r}
+# Generate table for codon usage list of E.coli
+ codon_usage_table <- do.call(rbind, codon_usage_list)
+
+ # View the table for E.coli
+ head(codon_usage_table)
+
+ #generate table for codon usage list of bifidobacterium
+ codon_usage_table1 <- do.call(rbind, codon_usage_list1)
+ 
+ #View the table for bifidobacterium
+ head(codon_usage_table1)
+
+```
+**code explanation**
+The code chunk given above is used to create table for the codon_usage_list/ codon_usage_list 1 for E.coli and bifidobacterium respectively. 
+do.call is a function which allows another function to run on all elements in the data which in this case is codon_usage_list/ codon_usage_list1.
+rbind is a function that is used tobind the data into rows and thus syseatically arrange the data.
+
