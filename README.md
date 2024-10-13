@@ -7,8 +7,6 @@ The **Group-6** repository is created by students from Deakin University as part
 
 Details
 -------
-First created through urgency and adrenaline by Aaron Quinlan Spring 2009. 
-Maintained by the Quinlan Laboratory at the University of Virginia.
 
 1. **Lead Contributors**:         Mathanki Mehra, Anakha Prasad, Kalyla Dsouza
 2. **Repository**:                https://github.com/mathanki27/Group-6.git
