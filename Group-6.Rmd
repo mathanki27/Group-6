@@ -1237,3 +1237,5 @@ The presence of different levels of specific k-mers or codon usage in the genome
 **Conclusion**
 
 In summary, the differences in k-mer or codon usage between E. coli and Bifidobacteriaceae are influenced by evolutionary history, functional constraints, ecological niches, and the availability of tRNAs. Understanding these factors provides insight into how organisms have adapted at the genetic level to thrive in their specific environments.
+
+sessionInfo()
