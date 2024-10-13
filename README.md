@@ -1,3 +1,5 @@
+![Deakin Image](https://github.com/mathanki27/Group-6/blob/e1e6959b57337d9f8c6478ec521e62b2a74955a3/deakin%20image.png?raw=true)
+
 Group-6
 ====================================================
 
