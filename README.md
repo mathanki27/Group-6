@@ -708,44 +708,9 @@ mean(len)
 #Find the median of the coding sequence for Bifidobacterium
 median(len)
 ```
-**Code Explanation**
-The code chunk above is used to obtain the mean and median values for the coding sequence lengths of the bifidobacterium.
 
-The next part of the question is to find differences between the two organisms:
+The difference in coding sequence is that: Escherichia coli has a higher mean coding sequence length than Bifidobacteriaceae bacterium. Escherichia coli has a higher median coding sequence length than Bifidobacteriaceae bacterium.
 
-```sh
-# Describe the differences in mean and median lengths
-if (ecoli_mean_length > bifido_mean_length) {
-  cat("Escherichia coli has a higher mean coding sequence length than Bifidobacteriaceae bacterium.\n")
-} else if (ecoli_mean_length < bifido_mean_length) {
-  cat("Bifidobacteriaceae bacterium has a higher mean coding sequence length than Escherichia coli.\n")
-} else {
-  cat("Both organisms have the same mean coding sequence length.\n")
-}
-
-if (ecoli_median_length > bifido_median_length) {
-  cat("Escherichia coli has a higher median coding sequence length than Bifidobacteriaceae bacterium.\n")
-} else if (ecoli_median_length < bifido_median_length) {
-  cat("Bifidobacteriaceae bacterium has a higher median coding sequence length than Escherichia coli.\n")
-} else {
-  cat("Both organisms have the same median coding sequence length.\n")
-}
-
-```
-**Code Explanation:**
-1. Mean Length Comparison:
-
-The code first checks if the mean coding sequence length of Escherichia coli is greater than that of Bifidobacteriaceae bacterium.
-- If true, it prints a message indicating that Escherichia coli has a higher mean length.
-- If false, it checks if the mean length of Bifidobacteriaceae bacterium is greater and prints the corresponding message.
-- If both means are equal, it indicates that they have the same mean length.
-
-2. Median Length Comparison:
-
-Next, the code performs a similar comparison for the median coding sequence lengths.
-- It checks if the median length of Escherichia coli is greater than that of Bifidobacteriaceae bacterium and prints the appropriate message based on the result.
-- It also checks if Bifidobacteriaceae bacterium has a greater median length, printing the corresponding message.
-- If both medians are equal, it states that they have the same median length.
 
 **The differences in coding sequence (CDS) length between Escherichia coli and Bifidobacteriaceae can be attributed to several factors:**
 
@@ -1157,12 +1122,12 @@ over_represented_bifido_5mer <- sort(myfreq_bifido_5mer, decreasing = TRUE)[1:10
 under_represented_bifido_5mer <- sort(myfreq_bifido_5mer, decreasing = FALSE)[1:10] # Top 10 under-represented 5-mers
 
 # Visualize the k-mers
-View(over_represented_bifido_3mer)
-View(under_represented_bifido_3mer)
-View(over_represented_bifido_4mer)
-View(under_represented_bifido_4mer)
-View(over_represented_bifido_5mer)
-View(under_represented_bifido_5mer)
+head(over_represented_bifido_3mer)
+head(under_represented_bifido_3mer)
+head(over_represented_bifido_4mer)
+head(under_represented_bifido_4mer)
+head(over_represented_bifido_5mer)
+head(under_represented_bifido_5mer)
 ```
 
 **Code Explanation:**
@@ -1184,33 +1149,33 @@ sort(myfreq_bifido_5mer, decreasing = TRUE)[1:10]: Similar to the previous steps
 - Under-represented 5-mers:
 sort(myfreq_bifido_5mer, decreasing = FALSE)[1:10]: This sorts the 5-mers in ascending order and selects the top 10 least frequent 5-mers, stored in under_represented_bifido_5mer.
 
-The View() function is used to open a new window in RStudio to visualize the top over- and under-represented 3-mers, 4-mers, and 5-mers. This allows for easy inspection of these patterns directly in the RStudio environment.
+The head() function is used to visualize the top over- and under-represented 3-mers, 4-mers, and 5-mers. This allows for easy inspection of these patterns directly in the RStudio environment.
 
 The following code can be utilized to calculate over and under represented k-mers of different lengths in *E.coli*. The code identifies the most and least frequent k-mers (3-mers, 4-mers, and 5-mers) in *E. coli* protein sequences, helping to detect any recurring or rare amino acid sequence patterns.
 
 ```sh
-# Over and under-represented 3mers for bifido
+# Over and under-represented 3mers for ecoli
 over_represented_ecoli_3mer <- sort(myfreq_ecoli_3mer, decreasing = TRUE)[1:10]  # Top 10 over-represented 3-mers
 under_represented_ecoli_3mer <- sort(myfreq_ecoli_3mer, decreasing = FALSE)[1:10] # Top 10 under-represented 3-mers
 
-# Over and under-represented 4mers for bifido
+# Over and under-represented 4mers for ecoli
 over_represented_ecoli_4mer <- sort(myfreq_ecoli_4mer, decreasing = TRUE)[1:10]  # Top 10 over-represented 4-mers
 under_represented_ecoli_4mer <- sort(myfreq_ecoli_4mer, decreasing = FALSE)[1:10] # Top 10 under-represented 4-mers
 
-# Over and under-represented 5mers for bifido
+# Over and under-represented 5mers for ecoli
 over_represented_ecoli_5mer <- sort(myfreq_ecoli_5mer, decreasing = TRUE)[1:10]  # Top 10 over-represented 5-mers
 under_represented_ecoli_5mer <- sort(myfreq_ecoli_5mer, decreasing = FALSE)[1:10] # Top 10 under-represented 5-mers
 
 # Visualize the k-mers
-View(over_represented_ecoli_3mer)
-View(under_represented_ecoli_3mer)
-View(over_represented_ecoli_4mer)
-View(under_represented_ecoli_4mer)
-View(over_represented_ecoli_5mer)
-View(under_represented_ecoli_5mer)
+head(over_represented_ecoli_3mer)
+head(under_represented_ecoli_3mer)
+head(over_represented_ecoli_4mer)
+head(under_represented_ecoli_4mer)
+head(over_represented_ecoli_5mer)
+head(under_represented_ecoli_5mer)
 ```
 **Code Explanation:**
-This code identifies the top 10 most frequent (**over-represented**) and least frequent (**under-represented**) k-mers (3-mers, 4-mers, and 5-mers) in *E. coli* protein sequences. It uses the `sort()` function to rank the k-mers based on their frequencies—descending for over-represented and ascending for under-represented k-mers. The results are stored in separate variables for each k-mer length (3, 4, and 5), and the `View()` function allows for visual inspection of these results in RStudio. This helps in detecting significant amino acid sequence patterns in *E. coli*.
+This code identifies the top 10 most frequent (**over-represented**) and least frequent (**under-represented**) k-mers (3-mers, 4-mers, and 5-mers) in *E. coli* protein sequences. It uses the `sort()` function to rank the k-mers based on their frequencies—descending for over-represented and ascending for under-represented k-mers. The results are stored in separate variables for each k-mer length (3, 4, and 5), and the `head()` function allows for visual inspection of these results in RStudio. This helps in detecting significant amino acid sequence patterns in *E. coli*.
 
 
 The following code creates data frames for the top over-represented k-mers (3-mers, 4-mers, and 5-mers) from both *E. coli* and *Bifidobacteriaceae*. Each data frame consists of two columns: kmer, which holds the names of the k-mers, and freq, which contains their corresponding frequencies converted to numeric values.
@@ -1360,6 +1325,20 @@ The presence of different levels of specific k-mers or codon usage in the genome
 
 5. Horizontal Gene Transfer
 - Gene Acquisition: E. coli is known for its ability to acquire genes from other bacteria through horizontal gene transfer. This can lead to variability in codon usage depending on the origin of the transferred genes and the codon preferences of donor organisms.
+
+The **sessionInfo()** function is used to display information about the current R session. This information is particularly useful for several reasons:
+
+Package Versions: It shows the versions of R and all attached packages. This can help you ensure that you are using the correct versions of packages required for your analysis or script.
+
+Platform Details: It provides details about the operating system and architecture. This can be helpful for troubleshooting issues that may be platform-specific.
+
+Loaded Packages: It lists the packages that are currently loaded in the session, which is useful for identifying dependencies and conflicts between packages.
+
+Reproducibility: Including session information in reports or scripts can enhance reproducibility. Other users or collaborators can see the exact environment in which the analysis was performed, making it easier to replicate the results.
+
+```sh
+sessionInfo()
+```
 
 **Conclusion**
 
