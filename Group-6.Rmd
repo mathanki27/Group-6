@@ -944,6 +944,123 @@ The fill aesthetic differentiates between the two organisms.
 The plot uses a dodge position to show the bars for each organism side by side.
 Additional formatting includes a minimal theme and axis labels, with a title "Amino Acid Frequency Comparison."
 
+### Step 5
+This questions demands to generate the codon usage table followed by estimating the codon usage bias for all coding sequences.this also requires to highlight the differences between the codon usage bias of both the organisms and proving the same with the help of plots.
+
+First step involves generating the codon usage list.
+```{r}
+# Load necessary packages
+library(seqinr)
+library(ggplot2)
+```
+**Code Explanation** This code snippet loads essential R packages for biological analysis and visualization:
+
+- library(seqinr): Used for handling and analyzing DNA and protein sequences.
+- library(ggplot2): A powerful tool for creating sophisticated visualizations, such as bar plots and scatter plots.
+
+The codon usage for E.coli is calculated as follows:
+```{r}
+uco(cds, index = "freq")
+```
+
+The codon usage for Bifidobacteriaceae is calculated as follows:
+```{r}
+uco(cds1, index = "freq")
+```
+**Note:** Since both the outputs show zero value for codons, we calculate the codon usage of single nucleotides.
+
+The following code shows the nucleotide usage in both the organisms:
+```{r}
+calculate_codon_usage_all <- function(coding_sequences) {
+  # Initialize an empty data frame to hold codon counts
+  codon_usage <- data.frame(Codon = character(), Count = integer(), Frequency = numeric())
+  
+  # Loop through each coding sequence
+  for (sequence in coding_sequences) {
+    # Combine all coding sequences into a single character vector
+    all_sequences <- paste(sequence, collapse = "")
+    
+    # Split the sequence into codons (3 bases each)
+    codons <- unlist(strsplit(all_sequences, "(?<=.)(?=.{3})", perl = TRUE))
+    
+    # Count occurrences of each codon
+    codon_counts <- table(codons)
+    
+    # Convert to data frame
+    temp_codon_usage <- as.data.frame(codon_counts)
+    names(temp_codon_usage) <- c("Codon", "Count")
+    
+    # Calculate the frequency of each codon
+    temp_codon_usage$Frequency <- temp_codon_usage$Count / sum(temp_codon_usage$Count)
+    
+    # Combine with the overall codon usage
+    codon_usage <- rbind(codon_usage, temp_codon_usage)
+  }
+  
+  # Aggregate counts and frequencies by codon
+  codon_usage <- aggregate(Count ~ Codon, data = codon_usage, sum)
+  codon_usage$Frequency <- codon_usage$Count / sum(codon_usage$Count)
+  
+  return(codon_usage)
+}
+
+# Calculate codon usage for all genes in E. coli
+codon_usage_ecoli <- calculate_codon_usage_all(cds[[2]])
+
+# Calculate codon usage for all genes in Bifidobacteriaceae
+codon_usage_bifido <- calculate_codon_usage_all(cds1[[2]])
+```
+
+**Code Explanation**
+
+The function calculates codon usage for multiple coding sequences. It initializes an empty data frame to store codon counts. For each coding sequence, it concatenates the sequences, splits them into codons, and counts the occurrences of each codon. These counts are then converted into a data frame, where frequencies are calculated based on the total count of codons. After processing all sequences, the function aggregates the counts and frequencies by codon and returns the final codon usage data.
+
+The codon usage is calculated separately for all genes in *E. coli* and *Bifidobacteriaceae*.
+```{r}
+head(codon_usage_bifido)
+head(codon_usage_ecoli)
+```
+
+**Code Explanation** 
+The head() function displays the first six rows of the codon usage data for *Bifidobacteriaceae* and *E. coli*. This provides insights into the most frequently used codons in their respective coding sequences, allowing for a comparison of codon usage patterns between the two organisms.
+
+
+```{r}
+# Add an organism column for plotting
+codon_usage_ecoli$Organism <- "E. coli"
+codon_usage_bifido$Organism <- "Bifidobacteriaceae"
+
+# Combine both datasets for plotting
+combined_codon_usage <- rbind(codon_usage_ecoli, codon_usage_bifido)
+
+# Ensure the Codon column is treated as a factor
+combined_codon_usage$Codon <- factor(combined_codon_usage$Codon, levels = unique(combined_codon_usage$Codon))
+```
+
+**Code Explanation** 
+The provided code snippet adds an “Organism” column to the codon usage datasets for both *E. coli* and *Bifidobacteriaceae*. It combines the two datasets into a single data frame for easier plotting. Additionally, it ensures that the “Codon” column is treated as a factor, maintaining the order of unique codons as levels. This preparation is important for accurate visualization in plots.
+
+```{r}
+# Plot codon usage
+ggplot(combined_codon_usage, aes(x = Codon, y = Frequency, fill = Organism)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "Codon Usage Comparison",
+       x = "Codon",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+**Code Explanation**
+The code snippet creates a bar plot to compare codon usage between *E. coli* and *Bifidobacteriaceae*. It uses ggplot2 to generate the plot, specifying:
+
+- x-axis: Codon
+- y-axis: Frequency
+- fill: Organism (to differentiate between E. coli and Bifidobacteriaceae)
+The geom_bar function with position = "dodge" displays the bars side by side for each codon. The theme_minimal() function is applied for a clean layout, and the x-axis text is rotated 45 degrees for better readability. The plot also includes labels for the title, x-axis, and y-axis.
+
+It is observed from the graph that the occurrence of A and T is more in Bifidobacteriaceae than in E.coli and GC content is more in E.coli than in Bifidobacteriaceae.
+
 ### Step 6
 This step identifies 10 protein sequence for variable k-mer lengths which are most over and under represented in *E.coli and Bifidobacteriaceae*.
 
@@ -1237,5 +1354,3 @@ The presence of different levels of specific k-mers or codon usage in the genome
 **Conclusion**
 
 In summary, the differences in k-mer or codon usage between E. coli and Bifidobacteriaceae are influenced by evolutionary history, functional constraints, ecological niches, and the availability of tRNAs. Understanding these factors provides insight into how organisms have adapted at the genetic level to thrive in their specific environments.
-
-sessionInfo()
