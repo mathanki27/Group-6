@@ -1370,5 +1370,26 @@ In summary, the differences in k-mer or codon usage between E. coli and Bifidoba
 
 Citation
 --------
+1.	Moeckel, C., et al., A survey of k-mer methods and applications in bioinformatics. Computational and Structural Biotechnology Journal, 2024.
+2.	Baldi, P. and A.D. Long, A Bayesian framework for the analysis of microarray expression data: regularized t-test and statistical inferences of gene changes. Bioinformatics, 2001. 17(6): p. 509-519.
+3.	Wang, H. and Y. Zhao, RBinds: a user-friendly server for RNA binding site prediction. Computational and Structural Biotechnology Journal, 2020. 18: p. 3762-3765.
+4.	Foster, Z.S., S. Chamberlain, and N.J. Grünwald, Taxa: An R package implementing data standards and methods for taxonomic data. F1000Research, 2018. 7.
+5.	Gaidatzis, D., et al., Supplementary Material: QuasR: Quantification and annotation of short reads in R.
+6.	Jones, M.B., et al., The new bioinformatics: integrating ecological data from the gene to the biosphere. Annu. Rev. Ecol. Evol. Syst., 2006. 37(1): p. 519-544.
+7.	Rehm, B., Bioinformatic tools for DNA/protein sequence analysis, functional assignment of genes and protein classification. Applied microbiology and biotechnology, 2001. 57: p. 579-592.
+8.	Anastassiou, D., Frequency-domain analysis of biomolecular sequences. Bioinformatics, 2000. 16(12): p. 1073-1081.
+9.	Vad, V., et al., Generalized box-plot for root growth ensembles. BMC bioinformatics, 2017. 18: p. 1-15.
+10.	Chang, C.C.H., et al., Bioinformatics approaches for improved recombinant protein production in Escherichia coli: protein solubility prediction. Briefings in bioinformatics, 2014. 15(6): p. 953-962.
+11.	Bottacini, F., et al., Comparative genomics of the genus Bifidobacterium. Microbiology, 2010. 156(11): p. 3243-3254.
+12.	Carvajal-Rodríguez, A., Myriads: P-value-based multiple testing correction. Bioinformatics, 2018. 34(6): p. 1043-1045.
+13.	Hui, L., Quantitative evaluations of variations using the population mean as a baseline for bioinformatics interpretation. PeerJ, 2023. 11: p. e14955.
+14.	Costa, A.M., J.T. Machado, and M.D. Quelhas, Histogram-based DNA analysis for the visualization of chromosome, genome and species information. Bioinformatics, 2011. 27(9): p. 1207-1214.
+15.	Ramırez, O.R., The importance and implementation of rich documentation in bioinformatics software projects. 2019.
+16.	Zhao, S., et al., Bioinformatics for RNA-seq data analysis. Bioinformatics—Updated Features and Applications: InTech, 2016: p. 125-49.
+17.	Breidenbach, J.D., et al., GeneToList: a web application to assist with gene identifiers for the non-bioinformatics-savvy scientist. Biology, 2022. 11(8): p. 1113.
+18.	Hampson, S., D. Kibler, and P. Baldi, Distribution patterns of over-represented k-mers in non-coding yeast DNA. Bioinformatics, 2002. 18(4): p. 513-528.
+19.	Kawulok, J. and S. Deorowicz, CoMeta: classification of metagenomes using k-mers. PloS one, 2015. 10(4): p. e0121453.
+20.	Goldman, N. and Z. Yang, A codon-based model of nucleotide substitution for protein-coding DNA sequences. Molecular biology and evolution, 1994. 11(5): p. 725-736.
+
 
 
