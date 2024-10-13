@@ -568,9 +568,7 @@ The code uses a conditional statement (an if-else structure) to compare the tota
 
 This code provides a clear and concise comparison of the total coding DNA lengths between two organisms. Depending on the values of ecoli_total_dna and bifido_total_dna, it outputs an appropriate message to describe which organism has more coding DNA or if they are equal. This helps in understanding the genetic differences between the two organisms based on their coding DNA content.
 
-
-
-###Question 3
+### Step 3
 The first part of the question involves the estimation of the length of the coding sequence in E.coli.
 ```{r}
 #Loading the seqinr package
@@ -578,16 +576,12 @@ library(seqinr)
 
 ##Read the fasta file of E.coli
 cds <- seqinr::read.fasta("ecoli_cds.fa")
-
-#Summaries the length of coding sequences
-summary(cds)
 ```
 **code explanation**
 library(seqinr)- this code is used to load the seqinr package which is used in R as it contains various tools which helps in examining and extracting the genomic sequences of diverse organisms.
 
 cds <- seqinr::read.fasta("ecoli_cds.fa")-this function is used to convert and organises the sequences in the fasta file into R and save it into the variable "cds" . read.fasta is a sequinr tool which is used for reading the sequences in fasta file to R.
 
-summary(cds)- this function is used to which is used to summaries various details of the sequences including the length, mode, classes etc.
 
 ```{r}
 #Estimate the length of coding sequence in bifidobacterium
@@ -596,52 +590,91 @@ library(seqinr)
 #Read the fasta file of Bifidobacterium 
 cds1 <- seqinr::read.fasta("bifido_cds.fa")
 
-#Summaries the length of coding sequences
-summary(cds)
 ```
 **code explanation**
 The code chunk above is used to install the seqinr package which consists of various tools like read.fasta which is used to convert the fasta file into R so that the sequences stored in the file can be studied and analysed.
 
+The code below defines a function to calculate the lengths of coding sequences (CDS) from FASTA files for two organisms: *Escherichia coli and Bifidobacteriaceae bacterium*.
 
-The next part to question three is to create boxplot for the coding sequence length in both the organisms
-Create the boxplot for E.coli
 ```{r}
-#Read the fasta file of E.coli
-cds <- seqinr::read.fasta("ecoli_cds.fa")
+# Function to get the lengths of all coding sequences in a fasta file
+get_CDS_lengths <- function(file) {
+  # Read the fasta file
+  fasta_content <- read.fasta(file, seqtype = "DNA")
+  
+  # Calculate the length of each sequence
+  cds_lengths <- sapply(fasta_content, length)
+  
+  return(cds_lengths)
+}
 
-#Summarise the first column as vector
-len <- as.numeric(summary(cds)[,1])
+# Get CDS lengths for Escherichia coli
+ecoli_cds_lengths <- get_CDS_lengths("ecoli_cds.fa")
+cat("Escherichia coli CDS lengths calculated.\n")
 
-#Generate the boxplot for sequence length of ecoli
-boxplot(len,ylab="sequence length (bp) for E.coli")
+# Get CDS lengths for Bifidobacteriaceae bacterium
+bifido_cds_lengths <- get_CDS_lengths("bifido_cds.fa")
+cat("Bifidobacteriaceae bacterium CDS lengths calculated.\n")
+
 ```
-**code explanation**
-cds <- seqinr::read.fasta("ecoli_cds.fa")- this code is used to convert the fasta file containing coding sequences of E.coli in readable R format and then save it as a vector called cds.
 
-len <- as.numeric(summary(cds)[,1])- This function is used to summarise the first column of the data and changes it into numerical vector under "len".
+**Code Explanation:**
+- Function Definition:
+The get_CDS_lengths function takes one parameter, file, which represents the path to a FASTA file.
+read.fasta(file, seqtype = "DNA") reads the content of the specified FASTA file, treating the sequences as DNA.
+sapply(fasta_content, length) applies the length function to each sequence in the FASTA file, returning a vector of lengths corresponding to each coding sequence.
+The function returns the vector of CDS lengths.
 
-Boxplot function is used to generate the graph for the sequence length for E.coli.
+- Calculating CDS Lengths for Escherichia coli:
+
+ecoli_cds_lengths <- get_CDS_lengths("ecoli_cds.fa") calls the function with the FASTA file for E. coli and stores the resulting lengths in ecoli_cds_lengths.
+cat("Escherichia coli CDS lengths calculated.\n") prints a message indicating that the lengths have been calculated.
+
+- Calculating CDS Lengths for Bifidobacteriaceae bacterium:
+
+bifido_cds_lengths <- get_CDS_lengths("bifido_cds.fa") calls the function with the FASTA file for Bifidobacteriaceae and stores the lengths in bifido_cds_lengths.
+cat("Bifidobacteriaceae bacterium CDS lengths calculated.\n") prints a message indicating the completion of this calculation.
 
 
-Create boxplot for bifidobacterium
+The next part of step three is to create boxplot for the coding sequence length in both the organisms.
+
 ```{r}
-#Read the fasta file of Bifidobacterium
-cds1 <- seqinr::read.fasta("bifido_cds.fa")
+# Combine the lengths into a single data frame for plotting
+cds_length_data <- data.frame(
+  Length = c(ecoli_cds_lengths, bifido_cds_lengths),
+  Organism = c(rep("Escherichia coli", length(ecoli_cds_lengths)), rep("Bifidobacteriaceae bacterium", length(bifido_cds_lengths)))
+)
 
-#Summarise the first column as vector
-len <- as.numeric(summary(cds1)[,1])
+# Load the necessary library for plotting
+library(ggplot2)
 
-#Generate the boxplot for sequence length of bifidobacterium
-boxplot(len,ylab="sequence length (bp) for bifidobacterium")
+# Create a boxplot of CDS lengths for both organisms
+ggplot(cds_length_data, aes(x = Organism, y = Length)) +
+  geom_boxplot(fill = c("skyblue", "lightgreen")) +
+  labs(title = "Boxplot of Coding Sequence Lengths in Escherichia coli and Bifidobacteriaceae bacterium",
+       x = "Organism", y = "CDS Length (base pairs)") +
+  theme_minimal()
+
 ```
-**code explanation**
-similar code chunk is used to create boxplot for the bifidobacterium sequences which involves reading the fasta file into R, summarizing the first column as vector and generate the graph.
+**Code Explanation:**
+1. Combining Lengths into a Data Frame:
+
+A data frame named cds_length_data is created with two columns:
+- Length: This column contains all CDS lengths from both organisms, combining ecoli_cds_lengths and bifido_cds_lengths.
+- Organism: This column specifies the organism for each length using the rep function to repeat the organism names for each length. It assigns "Escherichia coli" for lengths in ecoli_cds_lengths and "Bifidobacteriaceae bacterium" for lengths in bifido_cds_lengths.
+
+2. Loading Required Libraries:
+
+library(ggplot2) loads the ggplot2 library, which is used for creating the plot.
+Creating the Boxplot:
+
+- ggplot(cds_length_data, aes(x = Organism, y = Length)) initializes a ggplot object using cds_length_data, with the x-axis representing the organism and the y-axis representing the CDS lengths.
+- geom_boxplot(fill = c("skyblue", "lightgreen")) adds boxplots to the graph, with each organism colored differently (sky blue for E. coli and light green for Bifidobacteriaceae).
+labs(title = "Boxplot of Coding Sequence Lengths in Escherichia coli and Bifidobacteriaceae bacterium", x = "Organism", y = "CDS Length (base pairs)") sets the title and axis labels for the plot.
+- theme_minimal() applies a minimal theme to the plot for a cleaner appearance.
 
 
-The next part to question 3 talks about finding the mean and median values of coding sequence length
 ```{r}
-#Read the fasta file of E.coli
-cds <- seqinr::read.fasta("ecoli_cds.fa")
 
 #Summaries the first column as vector
 len <- as.numeric(summary(cds)[,1])
@@ -652,8 +685,8 @@ mean(len)
 #Find the median of the coding sequence length for E.coli
 median(len)
 ```
-**code explanation**
-The code chunk used above is used to find the mean and median .First the fasta file is converted to R and then the first column is then summarised as a numerial vector by the name "len" which is then used to obtain the mean and median of the coding sequence length for E.coli, thus the functions mean and median are used respectively.
+**Code Explanation**
+The code chunk used above is used to find the mean and median. First the fasta file is converted to R and then the first column is then summarised as a numerial vector by the name "len" which is then used to obtain the mean and median of the coding sequence length for E.coli, thus the functions mean and median are used respectively.
 
 ```{r}
 #Summarise the first column as vector
@@ -665,179 +698,542 @@ mean(len)
 #Find the median of the coding sequence for Bifidobacterium
 median(len)
 ```
-**code explanation**
+**Code Explanation**
 The code chunk above is used to obtain the mean and median values for the coding sequence lengths of the bifidobacterium.
 
-The next part of the question is to find differences between the two organisms.
-Difference1
-```{r}
-#Find GC content first first sequence of E.coli
-GC(cds[[1]])
-```
-**code explanation**
-The code above is used to calculate the GC  content of sequence 1 of E.coli, which is done with the help of the function GC which tries to fing the number of GC in sequence 1, which is obtained as 0.5151515.
+The next part of the question is to find differences between the two organisms:
 
 ```{r}
-#find GC content in sequence 1 of bifidobaterium
-GC(cds1[[1]])
+# Describe the differences in mean and median lengths
+if (ecoli_mean_length > bifido_mean_length) {
+  cat("Escherichia coli has a higher mean coding sequence length than Bifidobacteriaceae bacterium.\n")
+} else if (ecoli_mean_length < bifido_mean_length) {
+  cat("Bifidobacteriaceae bacterium has a higher mean coding sequence length than Escherichia coli.\n")
+} else {
+  cat("Both organisms have the same mean coding sequence length.\n")
+}
+
+if (ecoli_median_length > bifido_median_length) {
+  cat("Escherichia coli has a higher median coding sequence length than Bifidobacteriaceae bacterium.\n")
+} else if (ecoli_median_length < bifido_median_length) {
+  cat("Bifidobacteriaceae bacterium has a higher median coding sequence length than Escherichia coli.\n")
+} else {
+  cat("Both organisms have the same median coding sequence length.\n")
+}
+
 ```
-**code explanation**
-The code above is used to obtain the GC content in sequence 1 of the bifidobacterium which is obtained to be 0.4494624.Thus it is noted that E.coli sequence 1 contains more of GC content as compared to that of bifidobacterium.
+**Code Explanation:**
+1. Mean Length Comparison:
 
-difference2
-```{r}
-#Find the total GC content for E.coli
-GC(unlist(cds[1:4239]))
-```
-**code explanation**
-The code above is used to obtain GC content for all the sequences in E.coli, whic is 0.5193114
+The code first checks if the mean coding sequence length of Escherichia coli is greater than that of Bifidobacteriaceae bacterium.
+- If true, it prints a message indicating that Escherichia coli has a higher mean length.
+- If false, it checks if the mean length of Bifidobacteriaceae bacterium is greater and prints the corresponding message.
+- If both means are equal, it indicates that they have the same mean length.
 
-```{r}
-#Find the total GC content for bifidobacterium
-GC(unlist(cds1[1:1191]))
-```
-**code explanation**
-The code above is used to obtain the GC content for all sequences in bifidobacterium 0.4427088.this shows that E.coli has more GC content in all sequences when compared to that of bifidobacterium.
+2. Median Length Comparison:
 
-Difference 3 
-```{r}
-#Count number of each base in sequence 1 of E.coli
-count(cds[[1]],1)
-```
-**code explanation**
-The code above is used to count each of the bases (A,T,G,C) in the sequence 1 of E.coli bacterium which is obtained to be as A-21, C-22, G-12, t-11.
+Next, the code performs a similar comparison for the median coding sequence lengths.
+- It checks if the median length of Escherichia coli is greater than that of Bifidobacteriaceae bacterium and prints the appropriate message based on the result.
+- It also checks if Bifidobacteriaceae bacterium has a greater median length, printing the corresponding message.
+- If both medians are equal, it states that they have the same median length.
 
-```{r}
-#Count number of each base in sequence 1 of bifidobacterium
-count(cds1[[1]],1)
-```
-**code explanation**
-The code given above is used to obtain the A,T,G,C content in the first sequence of bifidobacterium, which is obtained to be A-112, c-85, G-124, T-144, Thus can be interpreted that bifidobaterium has more of each base in its first sequence.
+**The differences in coding sequence (CDS) length between Escherichia coli and Bifidobacteriaceae can be attributed to several factors:**
 
+1. Genomic Organization:
 
-difference 4
-Apart from these differences ,there are other differences in the sequences of E.coli and bifidobacterium too which include the difference in mean values of the sequence length for both organisms(938.5534,937.1889),difference in the median of the length of sequences of both organisms(831, 795) , the number of sequences(4239,1191), sum of the length of sequences of both bacterium (3978528,1116192) respectively.
+E. coli has a more complex genomic architecture, which can lead to longer coding sequences. Its genome is organized in a manner that often contains larger genes or genes that are part of operons, allowing for longer CDS lengths.
+Bifidobacteriaceae, on the other hand, tends to have a more streamlined genome, with a focus on essential metabolic pathways, potentially resulting in shorter coding sequences.
 
+2. Functional Adaptation:
 
+The functions and adaptations of each organism may also play a role. E. coli is a versatile bacterium capable of thriving in various environments, which may require more complex proteins and longer coding sequences to support its metabolic versatility.
+In contrast, Bifidobacteriaceae, often found in the gut microbiota, might have evolved to rely on shorter coding sequences for specific functions tailored to their niche environment.
 
-##Step 4
+3. Evolutionary Pressure:
+
+Different evolutionary pressures can influence genome size and gene length. E. coli is subject to a wide range of environmental conditions, necessitating a broader set of genes and potentially longer CDS to adapt.
+Bifidobacteriaceae may experience different selective pressures, focusing more on efficiency and specialization.
+
+**Importance of Determining Mean and Median Coding Sequences in Bacteria**
+
+- Understanding Genome Structure: Analyzing mean and median coding sequence lengths can provide insights into the overall structure and organization of bacterial genomes, helping to identify evolutionary patterns and functional adaptations.
+
+- Comparative Genomics: Mean and median values allow for the comparison of different bacterial species, shedding light on their evolutionary relationships and functional diversity.
+
+- Functional Annotation: Knowing the distribution of coding sequence lengths can aid in the annotation of genomes, helping researchers predict gene function and understand metabolic capabilities.
+
+- Bioinformatics Applications: In bioinformatics, the mean and median CDS lengths are useful for developing algorithms and models that rely on gene size for various analyses, such as gene prediction or functional annotation.
+
+- Health and Disease Implications: Understanding the coding sequences of gut bacteria like *Bifidobacteriaceae* can have implications for human health, as their metabolic functions can influence gut health and microbiome composition.
+
+In summary, the differences in coding sequence lengths between *E. coli and Bifidobacteriaceae* highlight their evolutionary adaptations and functional roles, while analyzing these metrics is crucial for various applications in genomics and bioinformatics.
+
+### Step 4
 Calculation of the frequency of DNA bases and protein in the total coding sequence and creation of a bar plot for the same.
 
 ```{r}
-# Load the necessary package
+# Load the required libraries
 library(seqinr)
+library(ggplot2)
 
-
-# Unlist the DNA sequences (combine all sequences into one long sequence)
-dna_combined <- unlist(cds1)
-dna_combined2 <- unlist(cds2)
 ```
 
 **Code Explanation**
 seqinr package is used for sequenece manipulation.The unlist function is used to combine the elements of bifido_cds.fa and Ecoli_cds.fa.The c function combines the vectors from both the sequences
 
 ```{r}
-# Count the occurrences of each nucleotide (A, T, G, C)
-dna_counts <- table(dna_combined)
-dna_counts2 <- table(dna_combined2)
+# Function to calculate base frequencies
+calculate_base_frequencies <- function(coding_sequences) {
+  # Concatenate all coding sequences into a single string
+  total_sequence <- paste(coding_sequences, collapse = "")
+  
+  # Calculate frequencies of each base
+  base_counts <- table(unlist(strsplit(total_sequence, "")))
+  
+  # Convert counts to numeric and calculate frequencies
+  base_frequencies <- as.data.frame(base_counts)
+  base_frequencies$Frequency <- as.numeric(base_frequencies$Freq) / sum(base_frequencies$Freq)
+  names(base_frequencies) <- c("Base", "Count", "Frequency")  # Renaming columns
+  
+  return(base_frequencies)
+}
+
+# Calculate frequencies for E. coli
+base_frequencies_ecoli <- calculate_base_frequencies(cds[[2]])
+
+# Calculate frequencies for Bifidobacteriaceae
+base_frequencies_bifido <- calculate_base_frequencies(cds1[[2]])
+
+```
+**Code Explanation:**
+1. Function Definition:
+The function calculate_base_frequencies takes a list of coding sequences as input.
+It concatenates all coding sequences into a single string using paste.
+
+2. Base Frequency Calculation:
+The combined string is split into individual bases (nucleotides) using strsplit.
+The frequency of each base (A, T, C, G) is calculated using table, which counts the occurrences of each base.
+These counts are converted to a data frame, and the frequency of each base is computed by dividing the count of each base by the total number of bases.
+
+3. Column Renaming:
+The columns of the resulting data frame are renamed to "Base," "Count," and "Frequency" for clarity.
+
+4. Calculating Frequencies:
+The function is then called to calculate base frequencies for Escherichia coli and Bifidobacteriaceae using the coding sequences stored in cds[[2]] and cds1[[2]], respectively.
+
+This code effectively summarizes the composition of nucleotide bases within the provided coding sequences, allowing for further analysis of their genetic characteristics.
+
+The protein sequences are extracted using the following code:
+
+```{r}
+# Extract protein sequences from coding sequences for E. coli
+prots <- translate(cds[[2]])
+
+# Extract protein sequences from coding sequences for Bifidobacteriaceae
+prots1 <- translate(cds1[[2]])
+
 ```
 **Code Explanation**
-The table() function counts the occurences of each nucleotide and displays the results in the form of a tabular column
+The code translates cds and cds1 (contains the coding sequences for E. coli and Bifidobacteriaceace) and extracts protein sequences from these coding sequences using the translate function.
+The resulting protein sequences are stored in the variable prots and prots1.
 
+The following code calculates amino acid frequencies from protein sequences for Escherichia coli and Bifidobacteriaceae:
 ```{r}
-# Calculate the total number of nucleotides
-total_bases <- sum(dna_counts)
-total_bases2 <- sum(dna_counts2)
+# Function to calculate amino acid frequencies
+calculate_aa_frequencies <- function(protein_sequences) {
+  # Concatenate all protein sequences into a single string
+  total_protein <- paste(protein_sequences, collapse = "")
+  
+  # Calculate frequencies of each amino acid
+  aa_counts <- table(unlist(strsplit(total_protein, "")))
+  
+  # Convert counts to numeric and calculate frequencies
+  aa_frequencies <- as.data.frame(aa_counts)
+  aa_frequencies$Frequency <- as.numeric(aa_frequencies$Freq) / sum(aa_frequencies$Freq)
+  names(aa_frequencies) <- c("AminoAcid", "Count", "Frequency")  # Renaming columns
+  
+  return(aa_frequencies)
+}
+
+# Calculate frequencies for E. coli
+aa_frequencies_ecoli <- calculate_aa_frequencies(prots)
+
+# Calculate frequencies for Bifidobacteriaceae
+aa_frequencies_bifido <- calculate_aa_frequencies(prots1)
+
+```
+
+**Code Explanation**
+1. Amino Acid Frequency Calculation Function:
+
+The function calculate_aa_frequencies takes a list of protein sequences as input.
+It concatenates all protein sequences into a single string using paste().
+The function then counts the occurrences of each amino acid using table() and splits the total protein string into individual characters.
+
+2. Frequency Calculation:
+
+The counts of amino acids are converted into a data frame called aa_frequencies, which includes:
+AminoAcid: The amino acid type.
+Count: The number of occurrences of each amino acid.
+Frequency: The proportion of each amino acid in relation to the total number of amino acids.
+
+3. Frequencies for Each Organism:
+
+The function is called with the protein sequences for E. coli (stored in prots), and the resulting frequencies are stored in aa_frequencies_ecoli.
+The same function is called with the protein sequences for Bifidobacteriaceae (stored in prots1), and the results are stored in aa_frequencies_bifido.
+
+The following code effectively visualizes the frequency distribution of DNA bases between the two organisms, allowing for easy comparison.
+```{r}
+# Combine base frequencies for plotting
+base_frequencies_ecoli$Organism <- "E. coli"
+base_frequencies_bifido$Organism <- "Bifidobacteriaceae"
+combined_base_frequencies <- rbind(base_frequencies_ecoli, base_frequencies_bifido)
+
+# Plot for DNA base frequencies
+ggplot(combined_base_frequencies, aes(x = Base, y = Frequency, fill = Organism)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "DNA Base Frequency Comparison",
+       x = "Base",
+       y = "Frequency")
+
 ```
 **Code Explanation**
-The sum() function takes all the counts from the dna_counts tabular column and adds them together.total_bases indicates the variable it is stored in.In a similar way The sum() function takes all the counts from the dna_counts 2 tabular column and adds them together total_bases2 indicates the variable it is stored in
+1. Combining Base Frequencies:
+
+Two new columns, Organism, are added to the base frequency data frames (base_frequencies_ecoli and base_frequencies_bifido) to label each organism.
+The data frames are then combined into one using rbind(), resulting in combined_base_frequencies.
+
+2. Plotting DNA Base Frequencies:
+
+A bar plot is created using ggplot() with the combined data.
+The x-axis represents the Base, and the y-axis shows the Frequency of each base.
+The fill aesthetic is used to differentiate between the two organisms.
+The plot employs a dodge position to show the bars for each organism side by side.
+Additional formatting includes a minimal theme and axis labels, with a title "DNA Base Frequency Comparison."
+
+The following code that combines amino acid frequencies from *Escherichia coli and Bifidobacteriaceae* for plotting:
 
 ```{r}
-# Calculate the frequency (proportion) of each nucleotide
-dna_frequency <- dna_counts / total_bases
-dna_frequency2 <- dna_counts2 / total_bases2
+# Combine amino acid frequencies for plotting
+aa_frequencies_ecoli$Organism <- "E. coli"
+aa_frequencies_bifido$Organism <- "Bifidobacteriaceae"
+combined_aa_frequencies <- rbind(aa_frequencies_ecoli, aa_frequencies_bifido)
+
+# Plot for amino acid frequencies
+ggplot(combined_aa_frequencies, aes(x = AminoAcid, y = Frequency, fill = Organism)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "Amino Acid Frequency Comparison",
+       x = "Amino Acid",
+       y = "Frequency")
+
 ```
-**Code Explanation**
-dna_counts / total_bases calculates the frequency of each nucleotide in the first sequence and stores this information in dna_frequency variable.Similarly dna_counts2 / total_bases calculates the frequency of each nucleotide in the second sequence and stores this information in dna_frequency2 variable.
 
-#Creation of barplot for nucleotide and amino acide frequency
+**Code Explanation:**
+1. Combining Amino Acid Frequencies:
+
+New columns, Organism, are added to the amino acid frequency data frames (aa_frequencies_ecoli and aa_frequencies_bifido) to label each organism.
+The data frames are combined into one using rbind(), resulting in combined_aa_frequencies.
+
+2. Plotting Amino Acid Frequencies:
+
+A bar plot is created using ggplot() with the combined data.
+The x-axis represents the Amino Acid, and the y-axis shows the Frequency of each amino acid.
+The fill aesthetic differentiates between the two organisms.
+The plot uses a dodge position to show the bars for each organism side by side.
+Additional formatting includes a minimal theme and axis labels, with a title "Amino Acid Frequency Comparison."
+
+### Step 6
+This step identifies 10 protein sequence for variable k-mer lengths which are most over and under represented in *E.coli and Bifidobacteriaceae*.
+
 ```{r}
-barplot(dna_frequency,xlab="nucleotides",ylab="frequency", main="Bifido CDS composition")
-barplot(dna_frequency2,xlab="nucleotides",ylab="frequency", main="E coli CDS composition")
+# Load necessary libraries
+library(seqinr)
+
+# Extract protein sequences from CDS for both organisms
+prot_ecoli <- sapply(cds, function(x) translate(x))           # *E. coli*
+prot_bifido <- sapply(cds1, function(x) translate(x))         # *Bifidobacteriaceae*
+
+# Combine the protein sequences into single strings for easy k-mer counting
+prots_ecoli <- unlist(prot_ecoli)
+prots_bifido <- unlist(prot_bifido)
+
+# Define the amino acid alphabet
+aa <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")
+
 ```
-**Code Explanation**
-The barplot function is used to create bar charts.Using the function barplot(dna_frequency) a barplot is created for the nucleotide sequences in "Bifido CDS composition",xlab labels the x axis as "nucleotides" and ylab labels the y axis as "frequency".Using the function barplot(dna_frequency) a barplot is created for the nucleotide sequences in "E coli CDS composition",xlab labels the x axis as "nucleotides" and ylab labels the y axis as "frequency"
+**Code Explanation:**
+The code starts by loading the seqinr library, which provides tools for working with biological sequences, including DNA and protein translation.
+- The sapply() function is applied to the cds object, which contains the coding DNA sequences (CDS) for Escherichia coli.
+- The translate() function converts each CDS sequence (DNA) into its corresponding protein sequence (amino acids).
+- The result is stored in prot_ecoli, which holds the translated protein sequences of E. coli.
+- unlist() is used to flatten the list of protein sequences for both organisms into single sequences for easier handling.
+- prots_ecoli stores the combined protein sequences for E. coli.
+- prots_bifido stores the combined protein sequences for Bifidobacteriaceae.
+- The vector aa defines the standard 20 amino acids, which will be used for further analysis, such as k-mer counting (analyzing short subsequences of amino acids).
+
+The code below counts and calculates the frequencies of k-mers (subsequences of length 3, 4, and 5) in the protein sequences of Escherichia coli and Bifidobacteriaceae. It compares how often certain amino acid combinations appear in these organisms’ proteins, which can be useful in protein analysis, evolutionary studies, or identifying conserved patterns.
 
 ```{r}
-#Count the occurrences of each amino acid for protein_combined1
-aminoacid_count1 <- table(protein_combined1)
-aminoacid_count2 <- table(protein_combined2)
+# Count k-mers for *E. coli*
+mycounts_ecoli_3mer <- count(prots_ecoli, wordsize=3, alphabet=aa)
+mycounts_ecoli_4mer <- count(prots_ecoli, wordsize=4, alphabet=aa)
+mycounts_ecoli_5mer <- count(prots_ecoli, wordsize=5, alphabet=aa)
+
+myfreq_ecoli_3mer <- count(prots_ecoli, wordsize=3, alphabet=aa, freq=TRUE)
+myfreq_ecoli_4mer <- count(prots_ecoli, wordsize=4, alphabet=aa, freq=TRUE)
+myfreq_ecoli_5mer <- count(prots_ecoli, wordsize=5, alphabet=aa, freq=TRUE)
+
+# Count k-mers for *Bifidobacteriaceae*
+mycounts_bifido_3mer <- count(prots_bifido, wordsize=3, alphabet=aa)
+mycounts_bifido_4mer <- count(prots_bifido, wordsize=4, alphabet=aa)
+mycounts_bifido_5mer <- count(prots_bifido, wordsize=5, alphabet=aa)
+
+myfreq_bifido_3mer <- count(prots_bifido, wordsize=3, alphabet=aa, freq=TRUE)
+myfreq_bifido_4mer <- count(prots_bifido, wordsize=4, alphabet=aa, freq=TRUE)
+myfreq_bifido_5mer <- count(prots_bifido, wordsize=5, alphabet=aa, freq=TRUE)
+
 ```
-**Code Explanation**
-The table() function counts the number of unique amino acids present and represents the data in a tabular format.
+**Code Explanation:**
+1. Counting k-mers for Escherichia coli:
+- What are k-mers?: k-mers are short subsequences of length k extracted from a sequence. For example, in a protein sequence, 3-mers would consist of subsequences of three amino acids.
 
-```{r}
-#Calculate the total number of amino acids in protein_combined1
-total_amino_acids1 <- sum(aminoacid_count1)
-total_amino_acids2 <- sum(aminoacid_count2)
-```
-**Code Explanation**
-sum() calculates the total number of amino acids in the set of protein sequences.
+**Counting k-mers for E. coli:**
+- count(prots_ecoli, wordsize=3, alphabet=aa): This function counts all possible 3-mers (subsequences of length 3) in the combined protein sequence of Escherichia coli (prots_ecoli). 
+- The alphabet=aa specifies that the sequences consist of amino acids (defined in the aa vector).
+wordsize=4 and wordsize=5 are used similarly to count 4-mers and 5-mers, respectively, in the protein sequence.
+- These counts are stored in mycounts_ecoli_3mer, mycounts_ecoli_4mer, and mycounts_ecoli_5mer for k-mers of size 3, 4, and 5.
+- count(prots_ecoli, wordsize=3, alphabet=aa, freq=TRUE): This function works similarly to the one used for counting, but with the argument freq=TRUE, it calculates the frequency (relative proportion) of each 3-mer rather than just the raw count.
+- Similar functions calculate the frequencies for 4-mers and 5-mers, stored in myfreq_ecoli_3mer, myfreq_ecoli_4mer, and myfreq_ecoli_5mer.
 
-```{r}
-#Calculate the frequency (proportion) of each amino acid for protein_combined1
-aa_frequency1 <-aminoacid_count1 / total_amino_acids1
-aa_frequency1 <-aminoacid_count2 / total_amino_acids2
-```
-**Code Explanation**
-aa_frequency1 <-aminoacid_count1 / total_amino_acids1 code divides the count of each amino acid in aminoacid_count1 by the total number of amino acids stored in total_amino_acids1
-aa_frequency1 <-aminoacid_count2 / total_amino_acids2 code divides the count of each amino acid in aminoacid_count2 by the total number of amino acids stored in total_amino_acids2
-
-```{r}
-barplot(aa_frequency1,xlab="nucleotides",ylab="frequency", main="Bifido CDS composition")
-barplot(aa_frequency2,xlab="nucleotides",ylab="frequency", main="E coli CDS composition")
-```
-**Code Explanation**
-The barplot() function is used to create barcharts,xlab="nucleotides" denotes the name for the x axis as "nucleotides"ylab="frequency"denotes the name for the y axis as "frequency" and main denotes the name of the chart as "Bifido CDS composition" in the first chart and "E coli CDS composition" in the second chart 
-# Differences between the two organisms
-The Ecoli cds DNA composition was around the same for a,c and t values but was slightly higher for g values whereas in the Bifido cds DNA composition there was great variability between the a,c,g and t values.
-Whereas in the amino acid frequencies in both Bifido and Ecoli there was not much variablity seen between the two.
-
-
-
-###Question 5
-This questions demands to generate the codon usage table followed by estimating the codon usage bias for all coding sequences.this also requires to highlight the differences between the codon usage bias of both the organisms and proving the same with the help of plots.
-
-First step involves generating the codon usage list.
-```{r}
-#To generate codon usage list of all sequences for E.coli
-codon_usage_list <- lapply(cds, uco)
-
-#To generate codon usage list of all sequences for bifidobacterium
-codon_usage_list1 <- lapply(cds1, uco)
-```
-**code explanation**
-The code chunk used above is to obtain the codon usage of of both the organisms. 
-lapply() is used to apply a function throughout the data acting on each element in it . and in this case , it is used to apply the uco function to each element in the data cds/cds1 and store the generated data in codon_usage_list/codon_usage_list1.
-
-
-Next step involves the generation of codon usage table .
-```{r}
-# Generate table for codon usage list of E.coli
- codon_usage_table <- do.call(rbind, codon_usage_list)
-
- # View the table for E.coli
- head(codon_usage_table)
-
- #generate table for codon usage list of bifidobacterium
- codon_usage_table1 <- do.call(rbind, codon_usage_list1)
+We can visualize the K-mers counts and frequency using the head command, as shown below:
  
- #View the table for bifidobacterium
- head(codon_usage_table1)
+```{r}
+# Visualizing K-mer count and frequency
+head(mycounts_bifido_3mer)
+head(myfreq_bifido_3mer)
+```
+The same above command can be used to visualize k-mers of different lengths for both the bacteria.
+The following code can be utilized to calculate over and under represented k-mers of different lengths in *Bifidobacteriaceae*. The code identifies and visualizes the most and least frequent (over- and under-represented) amino acid sequences of length 3 (3-mers), 4 (4-mers), and 5 (5-mers) in the protein sequences of *Bifidobacteriaceae*.
+```{r}
+# Over and under-represented 3mers for bifido
+over_represented_bifido_3mer <- sort(myfreq_bifido_3mer, decreasing = TRUE)[1:10]  # Top 10 over-represented 3-mers
+under_represented_bifido_3mer <- sort(myfreq_bifido_3mer, decreasing = FALSE)[1:10] # Top 10 under-represented 3-mers
+
+# Over and under-represented 4mers for bifido
+over_represented_bifido_4mer <- sort(myfreq_bifido_4mer, decreasing = TRUE)[1:10]  # Top 10 over-represented 4-mers
+under_represented_bifido_4mer <- sort(myfreq_bifido_4mer, decreasing = FALSE)[1:10] # Top 10 under-represented 4-mers
+
+# Over and under-represented 5mers for bifido
+over_represented_bifido_5mer <- sort(myfreq_bifido_5mer, decreasing = TRUE)[1:10]  # Top 10 over-represented 5-mers
+under_represented_bifido_5mer <- sort(myfreq_bifido_5mer, decreasing = FALSE)[1:10] # Top 10 under-represented 5-mers
+
+# Visualize the k-mers
+View(over_represented_bifido_3mer)
+View(under_represented_bifido_3mer)
+View(over_represented_bifido_4mer)
+View(under_represented_bifido_4mer)
+View(over_represented_bifido_5mer)
+View(under_represented_bifido_5mer)
+```
+
+**Code Explanation:**
+**1. Finding Over- and Under-Represented 3-mers for Bifidobacteriaceae:**
+- Over-represented 3-mers:
+sort(myfreq_bifido_3mer, decreasing = TRUE)[1:10]: This line sorts the frequencies of all 3-mers in Bifidobacteriaceae's protein sequences in descending order (most frequent first). The top 10 most frequent 3-mers are selected and stored in over_represented_bifido_3mer.
+- Under-represented 3-mers:
+sort(myfreq_bifido_3mer, decreasing = FALSE)[1:10]: This line sorts the 3-mer frequencies in ascending order (least frequent first), and the top 10 least frequent 3-mers are stored in under_represented_bifido_3mer.
+
+**2. Finding Over- and Under-Represented 4-mers for Bifidobacteriaceae:**
+- Over-represented 4-mers:
+sort(myfreq_bifido_4mer, decreasing = TRUE)[1:10]: This sorts the frequencies of all 4-mers in Bifidobacteriaceae in descending order and selects the top 10 most frequent 4-mers. These are stored in over_represented_bifido_4mer.
+- Under-represented 4-mers:
+sort(myfreq_bifido_4mer, decreasing = FALSE)[1:10]: This sorts the frequencies of all 4-mers in ascending order and selects the top 10 least frequent 4-mers, stored in under_represented_bifido_4mer.
+
+**3. Finding Over- and Under-Represented 5-mers for Bifidobacteriaceae:**
+- Over-represented 5-mers:
+sort(myfreq_bifido_5mer, decreasing = TRUE)[1:10]: Similar to the previous steps, this line sorts the 5-mer frequencies in descending order and stores the top 10 most frequent 5-mers in over_represented_bifido_5mer.
+- Under-represented 5-mers:
+sort(myfreq_bifido_5mer, decreasing = FALSE)[1:10]: This sorts the 5-mers in ascending order and selects the top 10 least frequent 5-mers, stored in under_represented_bifido_5mer.
+
+The View() function is used to open a new window in RStudio to visualize the top over- and under-represented 3-mers, 4-mers, and 5-mers. This allows for easy inspection of these patterns directly in the RStudio environment.
+
+The following code can be utilized to calculate over and under represented k-mers of different lengths in *E.coli*. The code identifies the most and least frequent k-mers (3-mers, 4-mers, and 5-mers) in *E. coli* protein sequences, helping to detect any recurring or rare amino acid sequence patterns.
+
+```{r}
+# Over and under-represented 3mers for bifido
+over_represented_ecoli_3mer <- sort(myfreq_ecoli_3mer, decreasing = TRUE)[1:10]  # Top 10 over-represented 3-mers
+under_represented_ecoli_3mer <- sort(myfreq_ecoli_3mer, decreasing = FALSE)[1:10] # Top 10 under-represented 3-mers
+
+# Over and under-represented 4mers for bifido
+over_represented_ecoli_4mer <- sort(myfreq_ecoli_4mer, decreasing = TRUE)[1:10]  # Top 10 over-represented 4-mers
+under_represented_ecoli_4mer <- sort(myfreq_ecoli_4mer, decreasing = FALSE)[1:10] # Top 10 under-represented 4-mers
+
+# Over and under-represented 5mers for bifido
+over_represented_ecoli_5mer <- sort(myfreq_ecoli_5mer, decreasing = TRUE)[1:10]  # Top 10 over-represented 5-mers
+under_represented_ecoli_5mer <- sort(myfreq_ecoli_5mer, decreasing = FALSE)[1:10] # Top 10 under-represented 5-mers
+
+# Visualize the k-mers
+View(over_represented_ecoli_3mer)
+View(under_represented_ecoli_3mer)
+View(over_represented_ecoli_4mer)
+View(under_represented_ecoli_4mer)
+View(over_represented_ecoli_5mer)
+View(under_represented_ecoli_5mer)
+```
+**Code Explanation:**
+This code identifies the top 10 most frequent (**over-represented**) and least frequent (**under-represented**) k-mers (3-mers, 4-mers, and 5-mers) in *E. coli* protein sequences. It uses the `sort()` function to rank the k-mers based on their frequencies—descending for over-represented and ascending for under-represented k-mers. The results are stored in separate variables for each k-mer length (3, 4, and 5), and the `View()` function allows for visual inspection of these results in RStudio. This helps in detecting significant amino acid sequence patterns in *E. coli*.
+
+
+The following code creates data frames for the top over-represented k-mers (3-mers, 4-mers, and 5-mers) from both *E. coli* and *Bifidobacteriaceae*. Each data frame consists of two columns: kmer, which holds the names of the k-mers, and freq, which contains their corresponding frequencies converted to numeric values.
+Instead of directly using over_represented_ecoli_3mer for the plots, data frames are created to avoid any column mismatch issues.
+
+```{r}
+# Creating data frames for 3mers, 4mers and 5mers
+plot_data_ecoli_3mer <- data.frame(
+  kmer = names(over_represented_ecoli_3mer),
+  freq = as.numeric(over_represented_ecoli_3mer)   # Convert to numeric values
+)
+
+plot_data_bifido_3mer <- data.frame(
+  kmer = names(over_represented_bifido_3mer),
+  freq = as.numeric(over_represented_bifido_3mer)  # Convert to numeric values
+)
+
+plot_data_ecoli_4mer <- data.frame(
+  kmer = names(over_represented_ecoli_4mer),
+  freq = as.numeric(over_represented_ecoli_4mer)
+)
+
+plot_data_bifido_4mer <- data.frame(
+  kmer = names(over_represented_bifido_4mer),
+  freq = as.numeric(over_represented_bifido_4mer)
+)
+
+plot_data_ecoli_5mer <- data.frame(
+  kmer = names(over_represented_ecoli_5mer),
+  freq = as.numeric(over_represented_ecoli_5mer)
+)
+
+plot_data_bifido_5mer <- data.frame(
+  kmer = names(over_represented_bifido_5mer),
+  freq = as.numeric(over_represented_bifido_5mer)
+)
 
 ```
-**code explanation**
-The code chunk given above is used to create table for the codon_usage_list/ codon_usage_list 1 for E.coli and bifidobacterium respectively. 
-do.call is a function which allows another function to run on all elements in the data which in this case is codon_usage_list/ codon_usage_list1.
-rbind is a function that is used tobind the data into rows and thus syseatically arrange the data.
 
+After creating the data frames, the head() function is used to inspect the first few rows of the 3-mer data frames for both organisms, ensuring that the data has been correctly formatted. This step can be repeated for the 4-mers and 5-mers to verify their correctness as well.
+
+```{r}
+# Visualizing and Checking if data frame is correct
+head(plot_data_ecoli_3mer)
+head(plot_data_bifido_3mer)
+
+```
+
+The following code creates bar plots to visualize the top over-represented 3-mers in the protein sequences of E. coli and Bifidobacteriaceae.
+
+```{r}
+# Plot for *E. coli* over-represented 3-mers
+ggplot(plot_data_ecoli_3mer, aes(x = kmer, y = freq)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Top 10 Over-represented 3-mers in E. coli",
+       x = "3-mer",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better visibility
+
+# Plot for *Bifidobacteriaceae* over-represented 3-mers
+ggplot(plot_data_bifido_3mer, aes(x = kmer, y = freq)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Top 10 Over-represented 3-mers in Bifidobacteriaceae",
+       x = "3-mer",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better visibility
+
+```
+**Code Explanation:**
+Plotting for E. coli:
+
+- The ggplot() function initializes the plot using the plot_data_ecoli_3mer data frame, specifying the x-axis as kmer and the y-axis as freq.
+- geom_bar(stat = "identity") creates a bar plot with the heights of the bars representing the frequency of each k-mer.
+- theme_minimal() applies a clean and minimalistic theme to the plot.
+labs() adds titles and labels to the axes, including the plot title "Top 10 Over-represented 3-mers in E. coli."
+- theme(axis.text.x = element_text(angle = 45, hjust = 1)) rotates the x-axis labels by 45 degrees for better visibility.
+
+Plotting for Bifidobacteriaceae:
+
+- The same steps are repeated for the Bifidobacteriaceae k-mer data, using the plot_data_bifido_3mer data frame and updating the title to "Top 10 Over-represented 3-mers in Bifidobacteriaceae."
+
+The following code creates bar plots to visualize the top over-represented 4-mers in the protein sequences of E. coli and Bifidobacteriaceae.
+
+```{r}
+# Plot for *E. coli* over-represented 4-mers
+ggplot(plot_data_ecoli_4mer, aes(x = kmer, y = freq)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Top 10 Over-represented 4-mers in E. coli",
+       x = "4-mer",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels
+
+# Plot for *Bifidobacteriaceae* over-represented 4-mers
+ggplot(plot_data_bifido_4mer, aes(x = kmer, y = freq)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Top 10 Over-represented 4-mers in Bifidobacteriaceae",
+       x = "4-mer",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels
+
+```
+
+The following code creates bar plots to visualize the top over-represented 5-mers in the protein sequences of E. coli and Bifidobacteriaceae.
+
+```{r}
+# Plot for *E. coli* over-represented 5-mers
+ggplot(plot_data_ecoli_5mer, aes(x = kmer, y = freq)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Top 10 Over-represented 5-mers in E. coli",
+       x = "5-mer",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels
+
+# Plot for *Bifidobacteriaceae* over-represented 5-mers
+ggplot(plot_data_bifido_5mer, aes(x = kmer, y = freq)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Top 10 Over-represented 5-mers in Bifidobacteriaceae",
+       x = "5-mer",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels
+
+```
+
+The presence of different levels of specific k-mers or codon usage in the genomes of *E. coli* and *Bifidobacteriaceae* can be attributed to several biological, ecological, and evolutionary factors:
+
+1. Genetic Drift and Evolution
+- Adaptive Evolution: Each organism has adapted to its specific environment, which can influence codon usage. For example, E. coli is often found in the gut of mammals and can quickly adapt to different nutrient sources, leading to the evolution of different codon preferences.
+- Mutation Pressure: Different mutation rates can affect the frequency of particular codons over generations. This can lead to the accumulation of certain codons while others may diminish.
+
+2. Functional Constraints
+- Protein Function: The coding sequences may reflect the functional needs of the proteins produced by the organism. Different proteins may have distinct requirements for translation efficiency, folding, and stability, which can influence codon choice.
+- Gene Expression Levels: Genes that are expressed at higher levels often show a bias towards codons that correspond to more abundant tRNAs in the organism. This can lead to overrepresentation of certain k-mers in highly expressed genes.
+
+3. tRNA Availability
+- tRNA Pool: The availability of different tRNA molecules in the cell can greatly influence codon usage. Organisms have varying pools of tRNA, which can lead to differences in how often certain codons are used based on which tRNAs are most abundant.
+- Codon Bias: A bias towards specific codons often correlates with the availability of corresponding tRNA species. If certain tRNAs are more plentiful, their associated codons will likely be used more frequently, leading to their overrepresentation.
+
+4. Ecological Niche and Lifestyle
+- Environment: The ecological niche occupied by an organism affects its metabolic pathways and thus its protein-coding sequences. Bifidobacteriaceae, often associated with fermentation processes in the gut, may have evolved different codon preferences to optimize their survival in a competitive microbial environment.
+- Symbiosis: The lifestyle of Bifidobacteriaceae, which includes symbiotic relationships with hosts, may select for different metabolic functions and thus different k-mer frequencies compared to the more versatile E. coli.
+
+5. Horizontal Gene Transfer
+- Gene Acquisition: E. coli is known for its ability to acquire genes from other bacteria through horizontal gene transfer. This can lead to variability in codon usage depending on the origin of the transferred genes and the codon preferences of donor organisms.
+
+**Conclusion**
+
+In summary, the differences in k-mer or codon usage between E. coli and Bifidobacteriaceae are influenced by evolutionary history, functional constraints, ecological niches, and the availability of tRNAs. Understanding these factors provides insight into how organisms have adapted at the genetic level to thrive in their specific environments.
